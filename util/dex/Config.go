@@ -5,11 +5,11 @@ import (
 
 	"github.com/ghodss/yaml"
 
-	"github.com/argoproj/argo-cd/common"
-	"github.com/argoproj/argo-cd/util/settings"
+	"github.com/devtron-labs/devtron/pkg/common"
+	"github.com/devtron-labs/devtron/util/settings"
 )
 
-func GenerateDexConfigYAML(settings *settings.ArgoCDSettings) ([]byte, error) {
+func GenerateDexConfigYAML(settings *settings.OIDCSettings) ([]byte, error) {
 	if !settings.IsDexConfigured() {
 		return nil, nil
 	}

@@ -84,6 +84,7 @@ required = [
   name = "k8s.io/helm"
   revision = "eecf22f77df5f65c823aacd2dbd30ae6c65f186e"
   #v2.12.3
+
 [[constraint]]
   branch = "master"
   name = "github.com/otiai10/copy"
@@ -91,35 +92,30 @@ required = [
 [[constraint]]
   name = "github.com/google/go-cmp"
   version = "0.2.0"
+
+#kubernetes start
 [[override]]
   name = "k8s.io/client-go"
-  version = "kubernetes-1.14.6"
+  version = "v0.19.3"
 
 [[override]]
   name = "k8s.io/apimachinery"
-  version= "kubernetes-1.14.6"
+  version= "v0.19.3"
 
 [[override]]
-  branch = "release-1.14"
   name = "k8s.io/api"
+  branch = "v0.19.3"
 
+[[override]]
+  name = "k8s.io/kubernetes"
+  version=  "v1.19.3"
 
-#[[constraint]]
-#  name = "github.com/imdario/mergo"
-#  version = "0.3.7"
+#kubernetes end
 
 [[constraint]]
   name = "github.com/evanphx/json-patch"
   version = "4.1.0"
 
-#[[constraint]]
-#  name = "github.com/src-d/go-git"
-#  revision = "db6c41c156481962abf9a55a324858674c25ab08"
-
-
-#[[constraint]]
-#  name = "gopkg.in/src-d/go-git.v4"
-#  version = "v4.10.0"
 [[constraint]]
   name = "gopkg.in/src-d/go-git.v4"
   version = "4.10.0"
@@ -140,16 +136,15 @@ required = [
 [[constraint]]
   name = "github.com/coreos/go-oidc"
   version = "2.0.0"
-  
+
 [[constraint]]
   name = "github.com/argoproj/argo-cd"
-#  branch = "master"
-#  revision = "e0bd546a07818ec06a27c2b3033454e3eb1c4152"
   version ="v1.2.1"
 
 [[constraint]]
   name = "google.golang.org/grpc"
   version = "1.15.0"
+
 [[constraint]]
   name = "github.com/prometheus/client_golang"
   version = "1.1.0"
@@ -165,12 +160,6 @@ required = [
 [[constraint]]
   name = "github.com/nats-io/stan"
   version = "0.5.0"
-
-[[override]]
-  name = "k8s.io/kubernetes"
-  #version = "v1.14.6"
-  revision=  "96fac5cd13a5dc064f7d9f4f23030a6aeface6cc"
-
 
 [[constraint]]
   name = "github.com/Pallinder/go-randomdata"

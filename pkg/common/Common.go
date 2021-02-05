@@ -89,6 +89,10 @@ const (
 	ArgoCDClientAppName = "Argo CD"
 	// ArgoCDClientAppID is the Oauth client ID we will use when registering our app to dex
 	ArgoCDClientAppID = "argo-cd"
+	// ArgoCDCLIClientAppName is name of the Oauth client app used when registering our CLI to dex
+	ArgoCDCLIClientAppName = "Argo CD CLI"
+	// ArgoCDCLIClientAppID is the Oauth client ID we will use when registering our CLI to dex
+	ArgoCDCLIClientAppID = "argo-cd-cli"
 )
 
 // Resource metadata labels and annotations (keys and values) used by Argo CD components
@@ -160,27 +164,9 @@ const (
 	EnvK8sClientMaxIdleConnections = "ARGOCD_K8S_CLIENT_MAX_IDLE_CONNECTIONS"
 	// EnvGnuPGHome is the path to ArgoCD's GnuPG keyring for signature verification
 	EnvGnuPGHome = "ARGOCD_GNUPGHOME"
-	// EnvWatchAPIBufferSize is the buffer size used to transfer K8S watch events to watch API consumer
-	EnvWatchAPIBufferSize = "ARGOCD_WATCH_API_BUFFER_SIZE"
-	// EnvPauseGenerationAfterFailedAttempts will pause manifest generation after the specified number of failed generation attempts
-	EnvPauseGenerationAfterFailedAttempts = "ARGOCD_PAUSE_GEN_AFTER_FAILED_ATTEMPTS"
-	// EnvPauseGenerationMinutes pauses manifest generation for the specified number of minutes, after sufficient manifest generation failures
-	EnvPauseGenerationMinutes = "ARGOCD_PAUSE_GEN_MINUTES"
-	// EnvPauseGenerationRequests pauses manifest generation for the specified number of requests, after sufficient manifest generation failures
-	EnvPauseGenerationRequests = "ARGOCD_PAUSE_GEN_REQUESTS"
-	// EnvControllerReplicas is the number of controller replicas
-	EnvControllerReplicas = "ARGOCD_CONTROLLER_REPLICAS"
-	// EnvControllerShard is the shard number that should be handled by controller
-	EnvControllerShard = "ARGOCD_CONTROLLER_SHARD"
-	// EnvEnableGRPCTimeHistogramEnv enables gRPC metrics collection
-	EnvEnableGRPCTimeHistogramEnv = "ARGOCD_ENABLE_GRPC_TIME_HISTOGRAM"
 )
 
 const (
-	// MinClientVersion is the minimum client version that can interface with this API server.
-	// When introducing breaking changes to the API or datastructures, this number should be bumped.
-	// The value here may be lower than the current value in VERSION
-	MinClientVersion = "1.4.0"
 	//CacheVersion is a objects version cached using util/cache/cache.go.
 	// Number should be bumped in case of backward incompatible change to make sure cache is invalidated after upgrade.
 	CacheVersion = "1.8.3"

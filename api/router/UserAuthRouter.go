@@ -67,6 +67,8 @@ func NewUserAuthRouterImpl(logger *zap.SugaredLogger, userAuthHandler restHandle
 }
 
 func (router UserAuthRouterImpl) initUserAuthRouter(userAuthRouter *mux.Router) {
+
+
 	userAuthRouter.Path("/").
 		HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			router.writeSuccess("Welcome @Devtron", writer)
