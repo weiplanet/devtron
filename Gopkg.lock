@@ -286,12 +286,12 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
+  digest = "1:de642aea85f03fe448f3e7949e8f60d0c2009a25a0bea8c18625a2d549c38a7c"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
-  version = "v3.2.0"
+  revision = "a58974ee87a68abcf6cfb2315224e89135cf3311"
+  version = "v4.0.0-preview1"
 
 [[projects]]
   branch = "master"
