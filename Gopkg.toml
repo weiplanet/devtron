@@ -86,7 +86,7 @@ required = [
   #v2.12.3
 
 [[constraint]]
-  branch = "master"
+  branch = "main"
   name = "github.com/otiai10/copy"
 
 [[constraint]]
@@ -96,19 +96,27 @@ required = [
 #kubernetes start
 [[override]]
   name = "k8s.io/client-go"
-  version = "v0.19.3"
+  version = "v0.19.7"
 
 [[override]]
   name = "k8s.io/apimachinery"
-  version= "v0.19.3"
+  version= "v0.19.7"
 
 [[override]]
   name = "k8s.io/api"
-  branch = "v0.19.3"
+  version = "v0.19.7"
 
 [[override]]
   name = "k8s.io/kubernetes"
-  version=  "v1.19.3"
+  version=  "v1.19.7"
+
+[[override]]
+  name = "k8s.io/klog"
+  version = "v1.0.0"
+
+#[[override]]
+#  name = "k8s.io/klog/v2"
+#  version = "v2.3.0"
 
 #kubernetes end
 
@@ -151,11 +159,11 @@ required = [
 
 [[constraint]]
   name = "github.com/argoproj/argo"
-  version = "2.3.0"
+  version = "v2.3.0"
 
-[[override]]
-  name = "github.com/argoproj/pkg"
-  revision = "036726ef3c7809929246eda91ffa520269c94021"
+#[[override]]
+#  name = "github.com/argoproj/pkg"
+#  revision = "036726ef3c7809929246eda91ffa520269c94021"
 
 [[constraint]]
   name = "github.com/nats-io/stan"
@@ -177,6 +185,6 @@ required = [
   name = "github.com/igm/sockjs-go"
   version = "3.0.0"
 
-[[constraint]]
+[[override]]
   name = "github.com/dgrijalva/jwt-go"
-  version = "v4.0.0-preview1"
+  version = "v3.2.0"
