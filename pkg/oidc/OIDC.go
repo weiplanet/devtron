@@ -3,6 +3,7 @@ package oidc
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"html"
 	"html/template"
 	"net"
@@ -15,7 +16,6 @@ import (
 
 	gooidc "github.com/coreos/go-oidc"
 	"github.com/devtron-labs/devtron/pkg/jwt/zjwt"
-	"github.com/dgrijalva/jwt-go/v4"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 
