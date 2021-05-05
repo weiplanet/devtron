@@ -177,6 +177,7 @@ func (impl *ExternalAppsServiceImpl) FindAll() ([]*ExternalAppsDto, error) {
 	}
 	for _, externalAppModel := range models {
 		externalApp := &ExternalAppsDto{}
+		externalApp.Id=externalAppModel.Id
 		externalApp.AppName = externalAppModel.AppName
 		externalApp.Label = externalAppModel.Label
 		externalApp.ChartName = externalAppModel.ChartName
