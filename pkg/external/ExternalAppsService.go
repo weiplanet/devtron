@@ -37,15 +37,16 @@ import (
 )
 
 type ExternalAppsDto struct {
-	Id             int       `json:"id"`
-	AppName        string    `json:"appName"`
-	Label          string    `json:"label"`
-	ChartName      string    `json:"chartName"`
-	Namespace      string    `json:"namespace"`
-	ClusterId      int       `json:"clusterId"`
-	LastDeployedOn time.Time `json:"lastDeployedOn"`
-	Active         bool      `json:"active"`
-	UserId         int32     `json:"-"`
+	Id             int                    `json:"id"`
+	AppName        string                 `json:"appName"`
+	Label          string                 `json:"label"`
+	ChartName      string                 `json:"chartName"`
+	Namespace      string                 `json:"namespace"`
+	ClusterId      int                    `json:"clusterId"`
+	LastDeployedOn time.Time              `json:"lastDeployedOn"`
+	Active         bool                   `json:"active"`
+	ResourceTree   map[string]interface{} `json:"resourceTree,omitempty"`
+	UserId         int32                  `json:"-"`
 }
 
 type ExternalAppsService interface {
@@ -69,13 +70,15 @@ type ExternalAppsServiceImpl struct {
 	versionService                argocdServer.VersionService
 	aCDAuthConfig                 *user.ACDAuthConfig
 	externalAppsRepository        external.ExternalAppsRepository
+	externalAppsDetailRepository  external.ExternalAppsDetailRepository
 }
 
 func NewExternalAppsServiceImpl(logger *zap.SugaredLogger, appStoreRepository appstore.AppStoreRepository,
 	appStoreApplicationRepository appstore.AppStoreApplicationVersionRepository, installedAppRepository appstore.InstalledAppRepository,
 	userService user.UserService, repoRepository chartConfig.ChartRepoRepository, K8sUtil *util.K8sUtil,
 	clusterService cluster.ClusterService, envService cluster.EnvironmentService,
-	versionService argocdServer.VersionService, aCDAuthConfig *user.ACDAuthConfig, externalAppsRepository external.ExternalAppsRepository) *ExternalAppsServiceImpl {
+	versionService argocdServer.VersionService, aCDAuthConfig *user.ACDAuthConfig, externalAppsRepository external.ExternalAppsRepository,
+	externalAppsDetailRepository external.ExternalAppsDetailRepository) *ExternalAppsServiceImpl {
 	externalAppsServiceImpl := &ExternalAppsServiceImpl{
 		logger:                        logger,
 		appStoreRepository:            appStoreRepository,
@@ -89,6 +92,7 @@ func NewExternalAppsServiceImpl(logger *zap.SugaredLogger, appStoreRepository ap
 		versionService:                versionService,
 		aCDAuthConfig:                 aCDAuthConfig,
 		externalAppsRepository:        externalAppsRepository,
+		externalAppsDetailRepository:  externalAppsDetailRepository,
 	}
 	//gocron.Every(2).Seconds().Do(externalAppsServiceImpl.Crawler)
 	//<-gocron.Start()
@@ -104,6 +108,7 @@ func (impl *ExternalAppsServiceImpl) SearchExternalAppsByFilter(appName string, 
 	}
 	for _, externalAppModel := range models {
 		externalApp := &ExternalAppsDto{}
+		externalApp.Id = externalAppModel.Id
 		externalApp.AppName = externalAppModel.AppName
 		externalApp.Label = externalAppModel.Label
 		externalApp.ChartName = externalAppModel.ChartName
@@ -160,12 +165,25 @@ func (impl *ExternalAppsServiceImpl) FindById(id int) (*ExternalAppsDto, error) 
 	if err != nil && !util.IsErrNoRows(err) {
 		return nil, err
 	}
+	externalApp.Id=externalAppModel.Id
 	externalApp.AppName = externalAppModel.AppName
 	externalApp.Label = externalAppModel.Label
 	externalApp.ChartName = externalAppModel.ChartName
 	externalApp.Namespace = externalAppModel.Namespace
 	externalApp.LastDeployedOn = externalAppModel.LastDeployedOn
 	externalApp.Active = externalAppModel.Active
+
+	externalAppDetailModel, err := impl.externalAppsDetailRepository.FindByExternalAppsId(externalApp.Id)
+	if err != nil && !util.IsErrNoRows(err) {
+		return nil, err
+	}
+	if externalAppDetailModel != nil && externalAppDetailModel.Id > 0 {
+		var dat map[string]interface{}
+		if err := json.Unmarshal([]byte(externalAppDetailModel.ResourceTree), &dat); err != nil {
+			panic(err)
+		}
+		externalApp.ResourceTree = dat
+	}
 	return externalApp, nil
 }
 
@@ -177,7 +195,7 @@ func (impl *ExternalAppsServiceImpl) FindAll() ([]*ExternalAppsDto, error) {
 	}
 	for _, externalAppModel := range models {
 		externalApp := &ExternalAppsDto{}
-		externalApp.Id=externalAppModel.Id
+		externalApp.Id = externalAppModel.Id
 		externalApp.AppName = externalAppModel.AppName
 		externalApp.Label = externalAppModel.Label
 		externalApp.ChartName = externalAppModel.ChartName
