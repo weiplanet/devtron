@@ -26,6 +26,9 @@ import (
 	"net/http"
 )
 
+func WriteJsonResp(w http.ResponseWriter, err error, respBody interface{}, status int) {
+	writeJsonResp(w, err, respBody, status)
+}
 //use of writeJsonRespStructured is preferable. it api exists due to historical reason
 // err.message is used as internal message for ApiError object in resp
 func writeJsonResp(w http.ResponseWriter, err error, respBody interface{}, status int) {
