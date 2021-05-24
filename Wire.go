@@ -660,6 +660,7 @@ func InitializeApp() (*App, error) {
 		wire.Bind(new(external2.ExternalAppsRepository), new(*external2.ExternalAppsRepositoryImpl)),
 		external2.NewExternalAppsDetailRepositoryImpl,
 		wire.Bind(new(external2.ExternalAppsDetailRepository), new(*external2.ExternalAppsDetailRepositoryImpl)),
+		util.NewGitCliUtil,
 	)
 	return &App{}, nil
 }
