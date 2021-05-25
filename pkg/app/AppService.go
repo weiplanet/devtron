@@ -59,27 +59,27 @@ type AppServiceImpl struct {
 	pipelineOverrideRepository    chartConfig.PipelineOverrideRepository
 	mergeUtil                     *MergeUtil
 	logger                        *zap.SugaredLogger
-	ciArtifactRepository          repository.CiArtifactRepository
-	pipelineRepository            pipelineConfig.PipelineRepository
-	gitFactory                    *GitFactory
-	dbMigrationConfigRepository   pipelineConfig.DbMigrationConfigRepository
-	eventClient                   client.EventClient
-	eventFactory                  client.EventFactory
-	acdClient                     application.ServiceClient
-	tokenCache                    *user.TokenCache
-	acdAuthConfig                 *user.ACDAuthConfig
-	enforcer                      rbac.Enforcer
-	enforcerUtil                  rbac.EnforcerUtil
-	user                          user.UserService
-	appListingRepository          repository.AppListingRepository
-	appRepository                 pipelineConfig.AppRepository
-	envRepository                 cluster.EnvironmentRepository
-	pipelineConfigRepository      chartConfig.PipelineConfigRepository
-	configMapRepository           chartConfig.ConfigMapRepository
-	chartRepository               chartConfig.ChartRepository
-	appRepo                       pipelineConfig.AppRepository
-	appLevelMetricsRepository     repository.AppLevelMetricsRepository
-	envLevelMetricsRepository     repository.EnvLevelAppMetricsRepository
+	ciArtifactRepository        repository.CiArtifactRepository
+	pipelineRepository          pipelineConfig.PipelineRepository
+	gitFactory                  *GitFactory
+	dbMigrationConfigRepository pipelineConfig.DbMigrationConfigRepository
+	eventClient                 client.EventClient
+	eventFactory                client.EventFactory
+	acdClient                   application.ServiceClient
+	tokenCache                  *user.TokenCache
+	acdAuthConfig               *user.ACDAuthConfig
+	enforcer                    rbac.Enforcer
+	enforcerUtil                rbac.EnforcerUtil
+	user                        user.UserService
+	appListingRepository        repository.AppListingRepository
+	appRepository               pipelineConfig.AppRepository
+	envRepository               cluster.EnvironmentRepository
+	pipelineConfigRepository    chartConfig.PipelineConfigRepository
+	configMapRepository         chartConfig.ConfigMapRepository
+	chartRepository             chartConfig.ChartRepository
+	appRepo                     pipelineConfig.AppRepository
+	appLevelMetricsRepository   repository.AppLevelMetricsRepository
+	envLevelMetricsRepository   repository.EnvLevelAppMetricsRepository
 	ciPipelineMaterialRepository  pipelineConfig.CiPipelineMaterialRepository
 	cdWorkflowRepository          pipelineConfig.CdWorkflowRepository
 	commonService                 commonService.CommonService

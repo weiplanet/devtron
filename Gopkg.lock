@@ -243,6 +243,14 @@
   version = "v1.9.1"
 
 [[projects]]
+  digest = "1:933fc6bfb0b1bc4fe24eaf9a277d6369edac41ff07168f039976b96810fb4e84"
+  name = "github.com/casbin/json-adapter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "98e846eed4809e48e9ec11e8169400487d8a3029"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:7a76860f4a0eea1b811a0368f5575bebdca77637321a84f0921a73a65c6a5d50"
   name = "github.com/casbin/xorm-adapter"
   packages = ["."]
@@ -1959,6 +1967,7 @@
     "github.com/aws/aws-sdk-go/service/s3/s3manager",
     "github.com/caarlos0/env",
     "github.com/casbin/casbin",
+    "github.com/casbin/json-adapter",
     "github.com/casbin/xorm-adapter",
     "github.com/coreos/go-oidc",
     "github.com/davecgh/go-spew/spew",
@@ -1985,7 +1994,6 @@
     "github.com/juju/errors",
     "github.com/lib/pq",
     "github.com/microsoft/azure-devops-go-api/azuredevops",
-    "github.com/microsoft/azure-devops-go-api/azuredevops/core",
     "github.com/microsoft/azure-devops-go-api/azuredevops/git",
     "github.com/nats-io/nats.go",
     "github.com/nats-io/stan",
@@ -2011,8 +2019,8 @@
     "gopkg.in/go-playground/validator.v9",
     "gopkg.in/igm/sockjs-go.v3/sockjs",
     "gopkg.in/src-d/go-git.v4",
+    "gopkg.in/src-d/go-git.v4/config",
     "gopkg.in/src-d/go-git.v4/plumbing/object",
-    "gopkg.in/src-d/go-git.v4/plumbing/transport",
     "gopkg.in/src-d/go-git.v4/plumbing/transport/http",
     "gopkg.in/yaml.v2",
     "k8s.io/api/apps/v1",

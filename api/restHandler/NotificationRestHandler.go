@@ -59,17 +59,17 @@ type NotificationRestHandlerImpl struct {
 	dockerRegistryConfig pipeline.DockerRegistryConfig
 	logger               *zap.SugaredLogger
 	gitRegistryConfig    pipeline.GitRegistryConfig
-	dbConfigService      pipeline.DbConfigService
-	userAuthService      user.UserService
-	validator            *validator.Validate
-	notificationService  notifier.NotificationConfigService
-	slackService         notifier.SlackNotificationService
-	sesService           notifier.SESNotificationService
-	enforcer             rbac.Enforcer
-	teamService          team.TeamService
-	environmentService   cluster.EnvironmentService
-	pipelineBuilder      pipeline.PipelineBuilder
-	enforcerUtil         rbac.EnforcerUtil
+	dbConfigService     pipeline.DbConfigService
+	userAuthService     user.UserService
+	validator           *validator.Validate
+	notificationService notifier.NotificationConfigService
+	slackService        notifier.SlackNotificationService
+	sesService          notifier.SESNotificationService
+	enforcer            rbac.Enforcer
+	teamService         team.TeamService
+	environmentService  cluster.EnvironmentService
+	pipelineBuilder     pipeline.PipelineBuilder
+	enforcerUtil        rbac.EnforcerUtil
 }
 
 type ChannelDto struct {
