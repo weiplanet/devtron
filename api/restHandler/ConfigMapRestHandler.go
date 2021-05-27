@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/devtron-labs/devtron/api/bean"
 	"github.com/devtron-labs/devtron/internal/sql/repository/pipelineConfig"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -61,14 +62,14 @@ type ConfigMapRestHandlerImpl struct {
 	teamService        team.TeamService
 	enforcer           rbac.Enforcer
 	pipelineRepository pipelineConfig.PipelineRepository
-	enforcerUtil       rbac.EnforcerUtil
+	enforcerUtil       enforcer2.EnforcerUtil
 	configMapService   pipeline.ConfigMapService
 }
 
 func NewConfigMapRestHandlerImpl(pipelineBuilder pipeline.PipelineBuilder, Logger *zap.SugaredLogger,
 	chartService pipeline.ChartService, userAuthService user.UserService, teamService team.TeamService,
 	enforcer rbac.Enforcer, pipelineRepository pipelineConfig.PipelineRepository,
-	enforcerUtil rbac.EnforcerUtil, configMapService pipeline.ConfigMapService) *ConfigMapRestHandlerImpl {
+	enforcerUtil enforcer2.EnforcerUtil, configMapService pipeline.ConfigMapService) *ConfigMapRestHandlerImpl {
 	return &ConfigMapRestHandlerImpl{
 		pipelineBuilder:    pipelineBuilder,
 		Logger:             Logger,

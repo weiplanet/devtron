@@ -34,6 +34,7 @@ import (
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/app"
 	bean2 "github.com/devtron-labs/devtron/pkg/bean"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/user"
 	util2 "github.com/devtron-labs/devtron/util/event"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -72,7 +73,7 @@ type WorkflowDagExecutorImpl struct {
 	ciArtifactRepository       repository.CiArtifactRepository
 	user                       user.UserService
 	enforcer                   rbac.Enforcer
-	enforcerUtil               rbac.EnforcerUtil
+	enforcerUtil               enforcer2.EnforcerUtil
 	groupRepository            repository.DeploymentGroupRepository
 	tokenCache                 *user.TokenCache
 	acdAuthConfig              *user.ACDAuthConfig
@@ -129,7 +130,7 @@ func NewWorkflowDagExecutorImpl(Logger *zap.SugaredLogger, pipelineRepository pi
 	user user.UserService,
 	groupRepository repository.DeploymentGroupRepository,
 	envRepository cluster.EnvironmentRepository,
-	enforcer rbac.Enforcer, enforcerUtil rbac.EnforcerUtil, tokenCache *user.TokenCache,
+	enforcer rbac.Enforcer, enforcerUtil enforcer2.EnforcerUtil, tokenCache *user.TokenCache,
 	acdAuthConfig *user.ACDAuthConfig, eventFactory client.EventFactory,
 	eventClient client.EventClient, cvePolicyRepository security.CvePolicyRepository,
 	scanResultRepository security.ImageScanResultRepository) *WorkflowDagExecutorImpl {

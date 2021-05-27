@@ -38,6 +38,7 @@ import (
 	"github.com/devtron-labs/devtron/internal/sql/repository/security"
 	. "github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/commonService"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/user"
 	util2 "github.com/devtron-labs/devtron/util"
 	"github.com/devtron-labs/devtron/util/event"
@@ -69,7 +70,7 @@ type AppServiceImpl struct {
 	tokenCache                  *user.TokenCache
 	acdAuthConfig               *user.ACDAuthConfig
 	enforcer                    rbac.Enforcer
-	enforcerUtil                rbac.EnforcerUtil
+	enforcerUtil                enforcer2.EnforcerUtil
 	user                        user.UserService
 	appListingRepository        repository.AppListingRepository
 	appRepository               pipelineConfig.AppRepository
@@ -110,7 +111,7 @@ func NewAppService(
 	eventClient client.EventClient,
 	eventFactory client.EventFactory, acdClient application.ServiceClient,
 	cache *user.TokenCache, authConfig *user.ACDAuthConfig,
-	enforcer rbac.Enforcer, enforcerUtil rbac.EnforcerUtil, user user.UserService,
+	enforcer rbac.Enforcer, enforcerUtil enforcer2.EnforcerUtil, user user.UserService,
 	appListingRepository repository.AppListingRepository,
 	appRepository pipelineConfig.AppRepository,
 	envRepository cluster.EnvironmentRepository,

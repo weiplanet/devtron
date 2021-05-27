@@ -46,6 +46,7 @@ import (
 	"github.com/devtron-labs/devtron/pkg/commonService"
 	"github.com/devtron-labs/devtron/pkg/deploymentGroup"
 	"github.com/devtron-labs/devtron/pkg/dex"
+	"github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/event"
 	"github.com/devtron-labs/devtron/pkg/git"
 	"github.com/devtron-labs/devtron/pkg/gitops"
@@ -402,8 +403,8 @@ func InitializeApp() (*App, error) {
 		repository.NewUserRepositoryImpl,
 		wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryImpl)),
 
-		rbac.NewEnforcerUtilImpl,
-		wire.Bind(new(rbac.EnforcerUtil), new(*rbac.EnforcerUtilImpl)),
+		enforcer.NewEnforcerUtilImpl,
+		wire.Bind(new(enforcer.EnforcerUtil), new(*enforcer.EnforcerUtilImpl)),
 
 		repository.NewEventRepositoryImpl,
 		wire.Bind(new(repository.EventRepository), new(*repository.EventRepositoryImpl)),

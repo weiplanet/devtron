@@ -23,6 +23,7 @@ import (
 	"github.com/devtron-labs/devtron/client/lens"
 	"github.com/devtron-labs/devtron/internal/sql/repository/pipelineConfig"
 	"github.com/devtron-labs/devtron/pkg/app"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -44,7 +45,7 @@ type ReleaseMetricsRestHandlerImpl struct {
 	userAuthService    user.UserService
 	teamService        team.TeamService
 	pipelineRepository pipelineConfig.PipelineRepository
-	enforcerUtil       rbac.EnforcerUtil
+	enforcerUtil       enforcer2.EnforcerUtil
 }
 
 func NewReleaseMetricsRestHandlerImpl(
@@ -53,7 +54,7 @@ func NewReleaseMetricsRestHandlerImpl(
 	ReleaseDataService app.ReleaseDataService,
 	userAuthService user.UserService,
 	teamService team.TeamService,
-	pipelineRepository pipelineConfig.PipelineRepository, enforcerUtil rbac.EnforcerUtil) *ReleaseMetricsRestHandlerImpl {
+	pipelineRepository pipelineConfig.PipelineRepository, enforcerUtil enforcer2.EnforcerUtil) *ReleaseMetricsRestHandlerImpl {
 	return &ReleaseMetricsRestHandlerImpl{
 		logger:             logger,
 		enforcer:           enforcer,

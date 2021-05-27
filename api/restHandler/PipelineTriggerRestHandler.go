@@ -24,6 +24,7 @@ import (
 	"github.com/devtron-labs/devtron/api/bean"
 	"github.com/devtron-labs/devtron/pkg/app"
 	"github.com/devtron-labs/devtron/pkg/deploymentGroup"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -48,12 +49,12 @@ type PipelineTriggerRestHandlerImpl struct {
 	teamService            team.TeamService
 	logger                 *zap.SugaredLogger
 	workflowDagExecutor    pipeline.WorkflowDagExecutor
-	enforcerUtil           rbac.EnforcerUtil
+	enforcerUtil           enforcer2.EnforcerUtil
 	deploymentGroupService deploymentGroup.DeploymentGroupService
 }
 
 func NewPipelineRestHandler(appService app.AppService, userAuthService user.UserService, validator *validator.Validate,
-	enforcer rbac.Enforcer, teamService team.TeamService, logger *zap.SugaredLogger, enforcerUtil rbac.EnforcerUtil,
+	enforcer rbac.Enforcer, teamService team.TeamService, logger *zap.SugaredLogger, enforcerUtil enforcer2.EnforcerUtil,
 	workflowDagExecutor pipeline.WorkflowDagExecutor, deploymentGroupService deploymentGroup.DeploymentGroupService) *PipelineTriggerRestHandlerImpl {
 	pipelineHandler := &PipelineTriggerRestHandlerImpl{
 		appService:             appService,

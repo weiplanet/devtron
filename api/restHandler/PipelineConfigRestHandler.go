@@ -34,6 +34,7 @@ import (
 	"github.com/devtron-labs/devtron/pkg/appWorkflow"
 	"github.com/devtron-labs/devtron/pkg/bean"
 	request "github.com/devtron-labs/devtron/pkg/cluster"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	security2 "github.com/devtron-labs/devtron/pkg/security"
 	"github.com/devtron-labs/devtron/pkg/team"
@@ -149,7 +150,7 @@ type PipelineConfigRestHandlerImpl struct {
 	gitSensorClient         gitSensor.GitSensorClient
 	pipelineRepository      pipelineConfig.PipelineRepository
 	appWorkflowService      appWorkflow.AppWorkflowService
-	enforcerUtil            rbac.EnforcerUtil
+	enforcerUtil            enforcer2.EnforcerUtil
 	envService              request.EnvironmentService
 	gitRegistryConfig       pipeline.GitRegistryConfig
 	dockerRegistryConfig    pipeline.DockerRegistryConfig
@@ -172,7 +173,7 @@ func NewPipelineRestHandlerImpl(pipelineBuilder pipeline.PipelineBuilder, Logger
 	validator *validator.Validate,
 	gitSensorClient gitSensor.GitSensorClient,
 	ciPipelineRepository pipelineConfig.CiPipelineRepository, pipelineRepository pipelineConfig.PipelineRepository,
-	enforcerUtil rbac.EnforcerUtil, envService request.EnvironmentService,
+	enforcerUtil enforcer2.EnforcerUtil, envService request.EnvironmentService,
 	gitRegistryConfig pipeline.GitRegistryConfig, dockerRegistryConfig pipeline.DockerRegistryConfig,
 	cdHandelr pipeline.CdHandler,
 	appCloneService appClone.AppCloneService,

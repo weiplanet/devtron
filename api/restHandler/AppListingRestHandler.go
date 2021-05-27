@@ -29,6 +29,7 @@ import (
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/app"
 	"github.com/devtron-labs/devtron/pkg/deploymentGroup"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -59,7 +60,7 @@ type AppListingRestHandlerImpl struct {
 	enforcer               rbac.Enforcer
 	pipeline               pipeline.PipelineBuilder
 	logger                 *zap.SugaredLogger
-	enforcerUtil           rbac.EnforcerUtil
+	enforcerUtil           enforcer2.EnforcerUtil
 	deploymentGroupService deploymentGroup.DeploymentGroupService
 	userService            user.UserService
 }
@@ -77,7 +78,7 @@ func NewAppListingRestHandlerImpl(application application.ServiceClient,
 	teamService team.TeamService,
 	enforcer rbac.Enforcer,
 	pipeline pipeline.PipelineBuilder,
-	logger *zap.SugaredLogger, enforcerUtil rbac.EnforcerUtil,
+	logger *zap.SugaredLogger, enforcerUtil enforcer2.EnforcerUtil,
 	deploymentGroupService deploymentGroup.DeploymentGroupService, userService user.UserService) *AppListingRestHandlerImpl {
 	appListingHandler := &AppListingRestHandlerImpl{
 		application:            application,

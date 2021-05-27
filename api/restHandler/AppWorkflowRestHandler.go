@@ -22,6 +22,7 @@ import (
 	"github.com/devtron-labs/devtron/internal/sql/repository/pipelineConfig"
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/appWorkflow"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -46,12 +47,12 @@ type AppWorkflowRestHandlerImpl struct {
 	enforcer           rbac.Enforcer
 	pipelineBuilder    pipeline.PipelineBuilder
 	appRepository      pipelineConfig.AppRepository
-	enforcerUtil       rbac.EnforcerUtil
+	enforcerUtil       enforcer2.EnforcerUtil
 }
 
 func NewAppWorkflowRestHandlerImpl(Logger *zap.SugaredLogger, userAuthService user.UserService, appWorkflowService appWorkflow.AppWorkflowService,
 	teamService team.TeamService, enforcer rbac.Enforcer, pipelineBuilder pipeline.PipelineBuilder,
-	appRepository pipelineConfig.AppRepository, enforcerUtil rbac.EnforcerUtil) *AppWorkflowRestHandlerImpl {
+	appRepository pipelineConfig.AppRepository, enforcerUtil enforcer2.EnforcerUtil) *AppWorkflowRestHandlerImpl {
 	return &AppWorkflowRestHandlerImpl{
 		Logger:             Logger,
 		appWorkflowService: appWorkflowService,

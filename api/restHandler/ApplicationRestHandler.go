@@ -25,6 +25,7 @@ import (
 	"github.com/devtron-labs/devtron/api/connector"
 	"github.com/devtron-labs/devtron/client/argocdServer/application"
 	"github.com/devtron-labs/devtron/pkg/cluster"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/terminal"
 	"github.com/devtron-labs/devtron/util"
@@ -67,7 +68,7 @@ type ApplicationRestHandlerImpl struct {
 	enforcer               rbac.Enforcer
 	teamService            team.TeamService
 	environmentService     cluster.EnvironmentService
-	enforcerUtil           rbac.EnforcerUtil
+	enforcerUtil           enforcer2.EnforcerUtil
 	terminalSessionHandler terminal.TerminalSessionHandler
 }
 
@@ -77,7 +78,7 @@ func NewApplicationRestHandlerImpl(client application.ServiceClient,
 	teamService team.TeamService,
 	environmentService cluster.EnvironmentService,
 	logger *zap.SugaredLogger,
-	enforcerUtil rbac.EnforcerUtil,
+	enforcerUtil enforcer2.EnforcerUtil,
 	terminalSessionHandler terminal.TerminalSessionHandler) *ApplicationRestHandlerImpl {
 	return &ApplicationRestHandlerImpl{
 		client:                 client,

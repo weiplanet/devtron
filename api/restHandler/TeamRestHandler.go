@@ -20,6 +20,7 @@ package restHandler
 import (
 	"encoding/json"
 	"fmt"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -52,7 +53,7 @@ type TeamRestHandlerImpl struct {
 	userService     user.UserService
 	validator       *validator.Validate
 	enforcer        rbac.Enforcer
-	enforcerUtil    rbac.EnforcerUtil
+	enforcerUtil    enforcer2.EnforcerUtil
 	userAuthService user.UserAuthService
 }
 
@@ -60,7 +61,7 @@ func NewTeamRestHandlerImpl(logger *zap.SugaredLogger,
 	teamService team.TeamService,
 	dbConfigService pipeline.DbConfigService, userService user.UserService,
 	enforcer rbac.Enforcer,
-	validator *validator.Validate, enforcerUtil rbac.EnforcerUtil, userAuthService user.UserAuthService) *TeamRestHandlerImpl {
+	validator *validator.Validate, enforcerUtil enforcer2.EnforcerUtil, userAuthService user.UserAuthService) *TeamRestHandlerImpl {
 	return &TeamRestHandlerImpl{
 		logger:          logger,
 		teamService:     teamService,

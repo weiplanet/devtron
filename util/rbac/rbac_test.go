@@ -1,9 +1,11 @@
 package rbac
 
 import (
+	"fmt"
 	"github.com/argoproj/argo-cd/util/session"
 	"github.com/casbin/casbin"
 	jsonadapter "github.com/casbin/json-adapter"
+	"github.com/devtron-labs/devtron/api/bean"
 	"go.uber.org/zap"
 	"strings"
 	"testing"
@@ -27,10 +29,15 @@ func TestEnforcerImpl_enforceByEmail(t *testing.T) {
 		{
 			name: "basic test",
 			fields: fields{
-				Enforcer: newEnforcer(getMangerPolicies()),
+				Enforcer: func() *casbin.Enforcer {
+					e := newEnforcer()
+					applyAllDefaultPolicies(e, "dev", "", "demo-devtron")
+					addPolicies(e, [][]string{[]string{"g", "abc@abc.com", "role:manager_dev_devtron-demo_"}})
+					return e
+				}(),
 				logger:   &zap.SugaredLogger{},
 			},
-			args: args{vals: toInterface([]string{"abc@abc.com", ResourceUser, ActionCreate, "*"})},
+			args: args{vals: toInterface([]string{"abc@abc.com", ResourceUser, ActionCreate, "dev"})},
 			want: true,
 		},
 	}
@@ -42,17 +49,19 @@ func TestEnforcerImpl_enforceByEmail(t *testing.T) {
 				logger:         tt.fields.logger,
 			}
 			if got := e.enforceByEmail(tt.fields.Enforcer, tt.args.vals...); got != tt.want {
+				//fmt.Println(tt.fields.Enforcer.GetPolicy())
+				//fmt.Println(tt.fields.Enforcer.GetGroupingPolicy())
 				t.Errorf("enforceByEmail() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func newEnforcer(policies [][]string) *casbin.Enforcer {
+func newEnforcer() *casbin.Enforcer {
 	var b []byte
 	a := jsonadapter.NewAdapter(&b)
 	enforcer := casbin.NewEnforcer("../../auth_model.conf", a, true)
-	addPolicies(enforcer, policies)
+	//addPolicies(enforcer, policies)
 	return enforcer
 }
 
@@ -87,4 +96,38 @@ func toInterface(input []string) []interface{} {
 		out[index] = in
 	}
 	return out
+}
+
+func applyAllDefaultPolicies(enforcer *casbin.Enforcer, team, entity, env string) {
+	policies, err := GenerateDefaultPolicies(team, entity, env)
+	if err != nil {
+		panic(err)
+	}
+	for _, policy := range policies {
+		applyPolicies(enforcer, policy)
+	}
+}
+
+func applyPolicies(enforcer *casbin.Enforcer, request bean.PolicyRequest) {
+	for _, p := range request.Data {
+		if strings.ToLower(string(p.Type)) == "p" && p.Sub != "" && p.Res != "" && p.Act != "" && p.Obj != "" {
+			sub := strings.ToLower(string(p.Sub))
+			res := strings.ToLower(string(p.Res))
+			act := strings.ToLower(string(p.Act))
+			obj := strings.ToLower(string(p.Obj))
+			success := enforcer.AddPolicy([]string{sub, res, act, obj, "allow"})
+			if !success {
+				panic(fmt.Errorf("error adding %v\n", p))
+			}
+		} else if strings.ToLower(string(p.Type)) == "g" && p.Sub != "" && p.Obj != "" {
+			sub := strings.ToLower(string(p.Sub))
+			obj := strings.ToLower(string(p.Obj))
+			success := enforcer.AddGroupingPolicy([]string{sub, obj})
+			if !success {
+				panic(fmt.Errorf("error adding %v\n", p))
+			}
+		}
+	}
+	enforcer.SavePolicy()
+	enforcer.LoadPolicy()
 }

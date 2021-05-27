@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/devtron-labs/devtron/internal/sql/repository"
 	"github.com/devtron-labs/devtron/pkg/cluster"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/notifier"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
@@ -69,7 +70,7 @@ type NotificationRestHandlerImpl struct {
 	teamService         team.TeamService
 	environmentService  cluster.EnvironmentService
 	pipelineBuilder     pipeline.PipelineBuilder
-	enforcerUtil        rbac.EnforcerUtil
+	enforcerUtil        enforcer2.EnforcerUtil
 }
 
 type ChannelDto struct {
@@ -82,7 +83,7 @@ func NewNotificationRestHandlerImpl(dockerRegistryConfig pipeline.DockerRegistry
 	validator *validator.Validate, notificationService notifier.NotificationConfigService,
 	slackService notifier.SlackNotificationService, sesService notifier.SESNotificationService, enforcer rbac.Enforcer,
 	teamService team.TeamService, environmentService cluster.EnvironmentService, pipelineBuilder pipeline.PipelineBuilder,
-	enforcerUtil rbac.EnforcerUtil) *NotificationRestHandlerImpl {
+	enforcerUtil enforcer2.EnforcerUtil) *NotificationRestHandlerImpl {
 	return &NotificationRestHandlerImpl{
 		dockerRegistryConfig: dockerRegistryConfig,
 		logger:               logger,

@@ -23,6 +23,7 @@ import (
 	security2 "github.com/devtron-labs/devtron/internal/sql/repository/security"
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/cluster"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/security"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -43,13 +44,13 @@ type ImageScanRestHandlerImpl struct {
 	imageScanService   security.ImageScanService
 	userService        user.UserService
 	enforcer           rbac.Enforcer
-	enforcerUtil       rbac.EnforcerUtil
+	enforcerUtil       enforcer2.EnforcerUtil
 	environmentService cluster.EnvironmentService
 }
 
 func NewImageScanRestHandlerImpl(logger *zap.SugaredLogger,
 	imageScanService security.ImageScanService, userService user.UserService, enforcer rbac.Enforcer,
-	enforcerUtil rbac.EnforcerUtil, environmentService cluster.EnvironmentService) *ImageScanRestHandlerImpl {
+	enforcerUtil enforcer2.EnforcerUtil, environmentService cluster.EnvironmentService) *ImageScanRestHandlerImpl {
 	return &ImageScanRestHandlerImpl{
 		logger:             logger,
 		imageScanService:   imageScanService,

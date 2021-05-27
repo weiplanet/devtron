@@ -30,6 +30,7 @@ import (
 	appstore2 "github.com/devtron-labs/devtron/internal/sql/repository/appstore"
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/appstore"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -62,14 +63,14 @@ type AppStoreRestHandlerImpl struct {
 	teamService      team.TeamService
 	enforcer         rbac.Enforcer
 	acdServiceClient application.ServiceClient
-	enforcerUtil     rbac.EnforcerUtil
+	enforcerUtil     enforcer2.EnforcerUtil
 	validator        *validator.Validate
 	client           *http.Client
 }
 
 func NewAppStoreRestHandlerImpl(Logger *zap.SugaredLogger, userAuthService user.UserService, appStoreService appstore.AppStoreService,
 	acdServiceClient application.ServiceClient, teamService team.TeamService,
-	enforcer rbac.Enforcer, enforcerUtil rbac.EnforcerUtil,
+	enforcer rbac.Enforcer, enforcerUtil enforcer2.EnforcerUtil,
 	validator *validator.Validate, client *http.Client) *AppStoreRestHandlerImpl {
 	return &AppStoreRestHandlerImpl{
 		Logger:           Logger,

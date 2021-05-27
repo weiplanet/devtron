@@ -25,6 +25,7 @@ import (
 	"github.com/devtron-labs/devtron/internal/sql/repository/pipelineConfig"
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/appstore"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
@@ -57,7 +58,7 @@ type InstalledAppRestHandlerImpl struct {
 	teamService         team.TeamService
 	enforcer            rbac.Enforcer
 	pipelineRepository  pipelineConfig.PipelineRepository
-	enforcerUtil        rbac.EnforcerUtil
+	enforcerUtil        enforcer2.EnforcerUtil
 	configMapService    pipeline.ConfigMapService
 	installedAppService appstore.InstalledAppService
 	validator           *validator.Validate
@@ -66,7 +67,7 @@ type InstalledAppRestHandlerImpl struct {
 func NewInstalledAppRestHandlerImpl(pipelineBuilder pipeline.PipelineBuilder, Logger *zap.SugaredLogger,
 	chartService pipeline.ChartService, userAuthService user.UserService, teamService team.TeamService,
 	enforcer rbac.Enforcer, pipelineRepository pipelineConfig.PipelineRepository,
-	enforcerUtil rbac.EnforcerUtil, configMapService pipeline.ConfigMapService,
+	enforcerUtil enforcer2.EnforcerUtil, configMapService pipeline.ConfigMapService,
 	installedAppService appstore.InstalledAppService,
 	validator *validator.Validate) *InstalledAppRestHandlerImpl {
 	return &InstalledAppRestHandlerImpl{

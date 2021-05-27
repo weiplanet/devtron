@@ -47,6 +47,7 @@ import (
 	"github.com/devtron-labs/devtron/pkg/commonService"
 	"github.com/devtron-labs/devtron/pkg/deploymentGroup"
 	"github.com/devtron-labs/devtron/pkg/dex"
+	"github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/event"
 	"github.com/devtron-labs/devtron/pkg/git"
 	"github.com/devtron-labs/devtron/pkg/gitops"
@@ -127,12 +128,12 @@ func InitializeApp() (*App, error) {
 	sessionServiceClientImpl := session2.NewSessionServiceClient(argoCDSettings)
 	userAuthServiceImpl := user.NewUserAuthServiceImpl(userAuthRepositoryImpl, sessionManager, sessionServiceClientImpl, sugaredLogger, userRepositoryImpl)
 	tokenCache := user.NewTokenCache(sugaredLogger, acdAuthConfig, userAuthServiceImpl)
-	enforcer := casbin.Create()
-	enforcerImpl := rbac.NewEnforcerImpl(enforcer, sessionManager, sugaredLogger)
+	casbinEnforcer := casbin.Create()
+	enforcerImpl := rbac.NewEnforcerImpl(casbinEnforcer, sessionManager, sugaredLogger)
 	teamRepositoryImpl := team.NewTeamRepositoryImpl(db)
 	appRepositoryImpl := pipelineConfig.NewAppRepositoryImpl(db)
 	environmentRepositoryImpl := cluster.NewEnvironmentRepositoryImpl(db)
-	enforcerUtilImpl := rbac.NewEnforcerUtilImpl(sugaredLogger, teamRepositoryImpl, appRepositoryImpl, environmentRepositoryImpl, pipelineRepositoryImpl, ciPipelineRepositoryImpl)
+	enforcerUtilImpl := enforcer.NewEnforcerUtilImpl(sugaredLogger, teamRepositoryImpl, appRepositoryImpl, environmentRepositoryImpl, pipelineRepositoryImpl, ciPipelineRepositoryImpl)
 	roleGroupRepositoryImpl := repository.NewRoleGroupRepositoryImpl(db, sugaredLogger)
 	userServiceImpl := user.NewUserServiceImpl(userAuthRepositoryImpl, sessionManager, sessionServiceClientImpl, sugaredLogger, userRepositoryImpl, roleGroupRepositoryImpl)
 	appListingRepositoryQueryBuilder := helper.NewAppListingRepositoryQueryBuilder(sugaredLogger)
@@ -388,7 +389,7 @@ func InitializeApp() (*App, error) {
 	}
 	grafanaRouterImpl := router.NewGrafanaRouterImpl(sugaredLogger, grafanaConfig)
 	muxRouter := router.NewMuxRouter(sugaredLogger, helmRouterImpl, pipelineConfigRouterImpl, migrateDbRouterImpl, clusterAccountsRouterImpl, appListingRouterImpl, environmentRouterImpl, clusterRouterImpl, clusterHelmConfigRouterImpl, webhookRouterImpl, userAuthRouterImpl, applicationRouterImpl, cdRouterImpl, projectManagementRouterImpl, gitProviderRouterImpl, dockerRegRouterImpl, notificationRouterImpl, teamRouterImpl, gitWebhookHandlerImpl, workflowStatusUpdateHandlerImpl, applicationStatusUpdateHandlerImpl, ciEventHandlerImpl, pubSubClient, userRouterImpl, cronBasedEventReceiverImpl, chartRefRouterImpl, configMapRouterImpl, appStoreRouterImpl, releaseMetricsRouterImpl, deploymentGroupRouterImpl, batchOperationRouterImpl, chartGroupRouterImpl, testSuitRouterImpl, imageScanRouterImpl, policyRouterImpl, gitOpsConfigRouterImpl, dashboardRouterImpl, attributesRouterImpl, commonRouterImpl, grafanaRouterImpl)
-	mainApp := NewApp(muxRouter, sugaredLogger, sseSSE, sessionManager, versionServiceImpl, enforcer, db, pubSubClient)
+	mainApp := NewApp(muxRouter, sugaredLogger, sseSSE, sessionManager, versionServiceImpl, casbinEnforcer, db, pubSubClient)
 	return mainApp, nil
 }
 

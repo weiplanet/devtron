@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/devtron-labs/devtron/client/events"
 	"github.com/devtron-labs/devtron/client/grafana"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
 	"github.com/gorilla/mux"
@@ -48,13 +49,13 @@ type TestSuitRestHandlerImpl struct {
 	userService  user.UserService
 	validator    *validator.Validate
 	enforcer     rbac.Enforcer
-	enforcerUtil rbac.EnforcerUtil
+	enforcerUtil enforcer2.EnforcerUtil
 	config       *client.EventClientConfig
 	client       *http.Client
 }
 
 func NewTestSuitRestHandlerImpl(logger *zap.SugaredLogger, userService user.UserService,
-	validator *validator.Validate, enforcer rbac.Enforcer, enforcerUtil rbac.EnforcerUtil,
+	validator *validator.Validate, enforcer rbac.Enforcer, enforcerUtil enforcer2.EnforcerUtil,
 	config *client.EventClientConfig, client *http.Client) *TestSuitRestHandlerImpl {
 	return &TestSuitRestHandlerImpl{
 		logger:       logger,

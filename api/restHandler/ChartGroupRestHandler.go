@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/devtron-labs/devtron/pkg/appstore"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
 	"github.com/gorilla/mux"
@@ -35,13 +36,13 @@ type ChartGroupRestHandlerImpl struct {
 	Logger            *zap.SugaredLogger
 	userAuthService   user.UserService
 	enforcer          rbac.Enforcer
-	enforcerUtil      rbac.EnforcerUtil
+	enforcerUtil      enforcer2.EnforcerUtil
 	validator         *validator.Validate
 }
 
 func NewChartGroupRestHandlerImpl(ChartGroupService appstore.ChartGroupService,
 	Logger *zap.SugaredLogger, userAuthService user.UserService,
-	enforcer rbac.Enforcer, enforcerUtil rbac.EnforcerUtil, validator *validator.Validate) *ChartGroupRestHandlerImpl {
+	enforcer rbac.Enforcer, enforcerUtil enforcer2.EnforcerUtil, validator *validator.Validate) *ChartGroupRestHandlerImpl {
 	return &ChartGroupRestHandlerImpl{
 		ChartGroupService: ChartGroupService,
 		Logger:            Logger,

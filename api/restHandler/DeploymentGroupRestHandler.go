@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/devtron-labs/devtron/pkg/deploymentGroup"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/team"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -51,11 +52,11 @@ type DeploymentGroupRestHandlerImpl struct {
 	enforcer               rbac.Enforcer
 	teamService            team.TeamService
 	userAuthService        user.UserService
-	enforcerUtil           rbac.EnforcerUtil
+	enforcerUtil           enforcer2.EnforcerUtil
 }
 
 func NewDeploymentGroupRestHandlerImpl(deploymentGroupService deploymentGroup.DeploymentGroupService, logger *zap.SugaredLogger,
-	validator *validator.Validate, enforcer rbac.Enforcer, teamService team.TeamService, userAuthService user.UserService, enforcerUtil rbac.EnforcerUtil) *DeploymentGroupRestHandlerImpl {
+	validator *validator.Validate, enforcer rbac.Enforcer, teamService team.TeamService, userAuthService user.UserService, enforcerUtil enforcer2.EnforcerUtil) *DeploymentGroupRestHandlerImpl {
 	return &DeploymentGroupRestHandlerImpl{deploymentGroupService: deploymentGroupService, logger: logger, validator: validator,
 		enforcer: enforcer, teamService: teamService, userAuthService: userAuthService, enforcerUtil: enforcerUtil}
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/devtron-labs/devtron/api/bean"
 	security2 "github.com/devtron-labs/devtron/internal/sql/repository/security"
 	"github.com/devtron-labs/devtron/pkg/cluster"
+	enforcer2 "github.com/devtron-labs/devtron/pkg/enforcer"
 	"github.com/devtron-labs/devtron/pkg/security"
 	"github.com/devtron-labs/devtron/pkg/user"
 	"github.com/devtron-labs/devtron/util/rbac"
@@ -44,7 +45,7 @@ type PolicyRestHandlerImpl struct {
 	userService        user.UserService
 	userAuthService    user.UserAuthService
 	enforcer           rbac.Enforcer
-	enforcerUtil       rbac.EnforcerUtil
+	enforcerUtil       enforcer2.EnforcerUtil
 	environmentService cluster.EnvironmentService
 }
 
@@ -52,7 +53,7 @@ func NewPolicyRestHandlerImpl(logger *zap.SugaredLogger,
 	policyService security.PolicyService,
 	userService user.UserService, userAuthService user.UserAuthService,
 	enforcer rbac.Enforcer,
-	enforcerUtil rbac.EnforcerUtil, environmentService cluster.EnvironmentService) *PolicyRestHandlerImpl {
+	enforcerUtil enforcer2.EnforcerUtil, environmentService cluster.EnvironmentService) *PolicyRestHandlerImpl {
 	return &PolicyRestHandlerImpl{
 		logger:             logger,
 		policyService:      policyService,

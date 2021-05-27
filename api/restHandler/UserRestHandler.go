@@ -574,6 +574,7 @@ func (handler UserRestHandlerImpl) UpdateRoleGroup(w http.ResponseWriter, r *htt
 	writeJsonResp(w, err, res, http.StatusOK)
 }
 
+//TODO: implement enforcer
 func (handler UserRestHandlerImpl) FetchRoleGroups(w http.ResponseWriter, r *http.Request) {
 	userId, err := handler.userService.GetLoggedInUser(r)
 	if userId == 0 || err != nil {
@@ -589,6 +590,7 @@ func (handler UserRestHandlerImpl) FetchRoleGroups(w http.ResponseWriter, r *htt
 	writeJsonResp(w, err, res, http.StatusOK)
 }
 
+//TODO: implement enforcer
 func (handler UserRestHandlerImpl) FetchRoleGroupsByName(w http.ResponseWriter, r *http.Request) {
 	userId, err := handler.userService.GetLoggedInUser(r)
 	if userId == 0 || err != nil {
@@ -652,6 +654,7 @@ func (handler UserRestHandlerImpl) DeleteRoleGroup(w http.ResponseWriter, r *htt
 	writeJsonResp(w, err, res, http.StatusOK)
 }
 
+//TODO: implement enforcer
 func (handler UserRestHandlerImpl) CheckUserRoles(w http.ResponseWriter, r *http.Request) {
 	userId, err := handler.userService.GetLoggedInUser(r)
 	if userId == 0 || err != nil {
@@ -675,6 +678,7 @@ func (handler UserRestHandlerImpl) CheckUserRoles(w http.ResponseWriter, r *http
 	writeJsonResp(w, err, result, http.StatusOK)
 }
 
+//TODO: superadmin should be able to dos
 func (handler UserRestHandlerImpl) SyncOrchestratorToCasbin(w http.ResponseWriter, r *http.Request) {
 	userId, err := handler.userService.GetLoggedInUser(r)
 	if userId == 0 || err != nil {
