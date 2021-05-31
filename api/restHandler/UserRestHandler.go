@@ -415,6 +415,7 @@ func (handler UserRestHandlerImpl) DeleteUser(w http.ResponseWriter, r *http.Req
 			}
 		}
 	} else {
+		//TODO: instead of * we are using ""
 		if ok := handler.enforcer.Enforce(token, rbac.ResourceUser, rbac.ActionDelete, ""); !ok {
 			response.WriteResponse(http.StatusForbidden, "FORBIDDEN", w, errors.New("unauthorized"))
 			return
@@ -678,7 +679,7 @@ func (handler UserRestHandlerImpl) CheckUserRoles(w http.ResponseWriter, r *http
 	writeJsonResp(w, err, result, http.StatusOK)
 }
 
-//TODO: superadmin should be able to dos
+//TODO: superadmin should be able to do
 func (handler UserRestHandlerImpl) SyncOrchestratorToCasbin(w http.ResponseWriter, r *http.Request) {
 	userId, err := handler.userService.GetLoggedInUser(r)
 	if userId == 0 || err != nil {

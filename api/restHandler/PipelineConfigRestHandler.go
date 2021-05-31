@@ -501,6 +501,7 @@ func (handler PipelineConfigRestHandlerImpl) UpdateCiTemplate(w http.ResponseWri
 		writeJsonResp(w, err, nil, http.StatusBadRequest)
 		return
 	}
+	//TODO: check if this CI belongs to this app
 	resourceName := handler.enforcerUtil.GetAppRBACName(app.AppName)
 	if ok := handler.enforcer.Enforce(token, rbac.ResourceApplications, rbac.ActionCreate, resourceName); !ok {
 		writeJsonResp(w, fmt.Errorf("unauthorized user"), "Unauthorized User", http.StatusForbidden)
@@ -544,6 +545,7 @@ func (handler PipelineConfigRestHandlerImpl) PatchCiPipelines(w http.ResponseWri
 		writeJsonResp(w, err, nil, http.StatusBadRequest)
 		return
 	}
+	//TODO: check if this CI belongs to this app
 	resourceName := handler.enforcerUtil.GetAppRBACName(app.AppName)
 	if ok := handler.enforcer.Enforce(token, rbac.ResourceApplications, rbac.ActionCreate, resourceName); !ok {
 		writeJsonResp(w, fmt.Errorf("unauthorized user"), "Unauthorized User", http.StatusForbidden)
@@ -702,6 +704,7 @@ func (handler PipelineConfigRestHandlerImpl) PatchCdPipeline(w http.ResponseWrit
 		writeJsonResp(w, err, nil, http.StatusBadRequest)
 		return
 	}
+	//TODO: check if cd belongs to this app
 	resourceName := handler.enforcerUtil.GetAppRBACName(app.AppName)
 	if ok := handler.enforcer.Enforce(token, rbac.ResourceApplications, rbac.ActionUpdate, resourceName); !ok {
 		writeJsonResp(w, fmt.Errorf("unauthorized user"), "Unauthorized User", http.StatusForbidden)
@@ -760,7 +763,7 @@ func (handler PipelineConfigRestHandlerImpl) EnvConfigOverrideCreate(w http.Resp
 		return
 	}
 	object := handler.enforcerUtil.GetEnvRBACNameByAppId(appId, environmentId)
-	if ok := handler.enforcer.Enforce(token, rbac.ResourceEnvironment, rbac.ActionUpdate, object); !ok {
+	if ok := handler.enforcer.Enforce(token, rbac.ResourceEnvironment, rbac.ActionCreate, object); !ok {
 		writeJsonResp(w, fmt.Errorf("unauthorized user"), "Unauthorized User", http.StatusForbidden)
 		return
 	}
@@ -910,6 +913,7 @@ func (handler PipelineConfigRestHandlerImpl) GetCiPipeline(w http.ResponseWriter
 		writeJsonResp(w, err, nil, http.StatusInternalServerError)
 		return
 	}
+	//TODO: check if ci belongs to this app
 	resourceName := handler.enforcerUtil.GetAppRBACName(app.AppName)
 	if ok := handler.enforcer.Enforce(token, rbac.ResourceApplications, rbac.ActionGet, resourceName); !ok {
 		writeJsonResp(w, fmt.Errorf("unauthorized user"), "Unauthorized User", http.StatusForbidden)
