@@ -28,6 +28,7 @@ import (
 	"github.com/go-pg/pg"
 	"go.uber.org/zap"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -529,8 +530,8 @@ func (impl ConfigMapServiceImpl) CSGlobalAddUpdate(configMapRequest *ConfigDataR
 				item.ExternalSecret = configData.ExternalSecret
 				item.RoleARN = configData.RoleARN
 				found = true
-				item.SubPath=configData.SubPath
-				item.FilePermission=configData.FilePermission
+				item.SubPath = configData.SubPath
+				item.FilePermission = configData.FilePermission
 			}
 			configs = append(configs, item)
 		}
@@ -1383,7 +1384,8 @@ func (impl ConfigMapServiceImpl) CSEnvironmentFetchForEdit(name string, id int, 
 }
 
 func (impl ConfigMapServiceImpl) validateConfigData(configData *ConfigData) (bool, error) {
-	dataMap := make(map[string]string)
+	var data json.RawMessage
+	dataMap := make(map[string]interface{})
 	if configData.Data != nil {
 		err := json.Unmarshal(configData.Data, &dataMap)
 		if err != nil {
@@ -1396,7 +1398,27 @@ func (impl ConfigMapServiceImpl) validateConfigData(configData *ConfigData) (boo
 		if !re.MatchString(key) {
 			return false, fmt.Errorf("invalid key : %s", key)
 		}
+		switch v := dataMap[key].(type) {
+		case int:
+			fmt.Println("int:", v)
+			dataMap[key] = strconv.Itoa(dataMap[key].(int))
+		case float64:
+			dataMap[key] = strconv.FormatFloat(dataMap[key].(float64), 'f', -1, 64)
+		case bool:
+			dataMap[key] = strconv.FormatBool(dataMap[key].(bool))
+		default:
+			dataMap[key] = dataMap[key]
+		}
 	}
+	b, err := json.Marshal(dataMap)
+	if err != nil {
+		return false, err
+	}
+	err = json.Unmarshal(b, &data)
+	if err != nil {
+		return false, err
+	}
+	configData.Data = data
 	return true, nil
 }
 
