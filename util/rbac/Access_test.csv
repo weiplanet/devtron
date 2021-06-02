@@ -12,6 +12,10 @@ manager/application - get group negative,dev,devtron,demo-devtron,g,abc@abc.com,
 manager/all - delete group,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,user,delete,dev,true
 manager/application - delete group,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev,true
 manager/application - delete group negative,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev1,false
+manager/notification - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,true
+manager/notification - create group negative,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,create,dev1,false
+manager/notification - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,true
+manager/notification - get group negative,dev,devtron,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_devtron,abc@abc.com,user,get,dev1,false
 admin/application - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
 admin/all - create group,dev, ,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_,abc@abc.com,user,create,dev,false
 admin/all - update group,dev, , demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_,abc@abc.com,user,update,dev,false
@@ -20,6 +24,8 @@ admin/all - get group,dev, ,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtr
 admin/application - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 admin/all - delete group,dev, ,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_,abc@abc.com,user,delete,dev,false
 admin/application - delete group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev,false
+admin/notification - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
+admin/notification - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 trigger/application - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
 trigger/all - create group,dev, ,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_,abc@abc.com,user,create,dev,false
 trigger/all - update group,dev, ,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_,abc@abc.com,user,update,dev,false
@@ -28,6 +34,8 @@ trigger/all - get group,dev, , demo-devtron,g,abc@abc.com,role:trigger_dev_demo-
 trigger/application - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 trigger/all - delete group,dev, ,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_,abc@abc.com,user,delete,dev,false
 trigger/application - delete group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev,false
+trigger/notification - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
+trigger/notification - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 view/application - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
 view/all - create group,dev, ,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_,abc@abc.com,user,create,dev,false
 view/all - update group,dev, , demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_,abc@abc.com,user,update,dev,false
@@ -36,3 +44,5 @@ view/all - get group,dev, ,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron
 view/application - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 view/all - delete group,dev, , demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_,abc@abc.com,user,delete,dev,false
 view/application - delete group,dev,devtron,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev,false
+view/notification - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
+view/notification - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:view_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false

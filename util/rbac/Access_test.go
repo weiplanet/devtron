@@ -27,7 +27,7 @@ func TestEnforcerImpl_enforceByEmail_groupAccess_For_Manager(t *testing.T) {
 		args   args
 		want   bool
 	}
-	csvfile, err := os.Open("rows.csv")
+	csvfile, err := os.Open("Access_test.csv")
 	if err != nil {
 		log.Fatalln("Couldn't open the csv file", err)
 	}
