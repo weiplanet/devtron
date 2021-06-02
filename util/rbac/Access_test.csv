@@ -24,7 +24,7 @@ admin/all - get group,dev, ,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtr
 admin/application - get group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,get,dev,false
 admin/all - delete group,dev, ,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_,abc@abc.com,user,delete,dev,false
 admin/application - delete group,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,user,delete,dev,false
-admin/notification - create notification config,dev,,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,notification,create,*,false
+admin/notification - create notification config,dev,,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_,abc@abc.com,notification,create,*,false
 admin/notification - get notification config,dev,devtron,demo-devtron,g,abc@abc.com,role:admin_dev_demo-devtron_devtron,abc@abc.com,notification,get,dev,false
 trigger/application - create group,dev,devtron,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_devtron,abc@abc.com,user,create,dev,false
 trigger/all - create group,dev, ,demo-devtron,g,abc@abc.com,role:trigger_dev_demo-devtron_,abc@abc.com,user,create,dev,false
