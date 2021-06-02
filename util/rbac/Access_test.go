@@ -47,6 +47,10 @@ func TestEnforcerImpl_enforceByEmail_groupAccess_For_Manager(t *testing.T) {
 					e := newEnforcer()
 					applyAllDefaultPolicies(e, record[1], record[2], record[3])
 					addPolicies(e, [][]string{{record[4], record[5], record[6]}})
+					//fmt.Printf("%s\n",record[0])
+					//if strings.Contains(record[0], "notif") {
+					//	fmt.Printf("notification: %v\n", record)
+					//}
 					return e
 				}(),
 				logger: &zap.SugaredLogger{},
@@ -70,6 +74,7 @@ func TestEnforcerImpl_enforceByEmail_groupAccess_For_Manager(t *testing.T) {
 			//fmt.Println("#########")
 			if got := e.enforceByEmail(tt.fields.Enforcer, tt.args.vals...); got != tt.want {
 				fmt.Println(tt.fields.Enforcer.GetPolicy())
+				fmt.Println(tt.fields.Enforcer.GetGroupingPolicy())
 				t.Errorf("enforceByEmail() = %v, want %v", got, tt.want)
 			}
 			tt.fields.Enforcer = nil
