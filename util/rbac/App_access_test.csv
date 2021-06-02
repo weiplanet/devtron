@@ -1,0 +1,18 @@
+manager/all - create ci/cd pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,applications,create,dev/application,false
+manager/specific - create ci/cd pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,create,dev/application,true
+manager/specific - create ci/cd pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,create,dev/applications,false
+manager/specific - create cd environment pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,create,demo-devtron/applications,false
+manager/specific - create cd environment pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,create,demo-devtron/application,true
+manager/all - create cd environment pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,environment,create,demo-devtron/applications,false
+manager/all - update ci/cd pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,applications,update,dev/application,false
+manager/specific - update ci/cd pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,update,dev/application,true
+manager/specific - update ci/cd pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,update,dev/applications,false
+manager/specific - update cd environment pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,update,demo-devtron/applications,false
+manager/specific - update cd environment pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,update,demo-devtron/application,true
+manager/all - update cd environment pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,environment,update,demo-devtron/applications,false
+manager/all - get ci/cd pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,applications,get,dev/application,false
+manager/specific - get ci/cd pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,get,dev/application,true
+manager/specific - get ci/cd pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,applications,get,dev/applications,false
+manager/specific - get cd environment pipeline negative,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,get,demo-devtron/applications,false
+manager/specific - get cd environment pipeline,dev,application,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_application,abc@abc.com,environment,get,demo-devtron/application,true
+manager/all - get cd environment pipeline,dev, ,demo-devtron,g,abc@abc.com,role:manager_dev_demo-devtron_,abc@abc.com,environment,get,demo-devtron/applications,false
