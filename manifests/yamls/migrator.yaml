@@ -13,9 +13,14 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: postgresql-migrate-devtron
+  labels:
+    component: postgresql-migrate-devtron
 spec:
   ttlSecondsAfterFinished: 1000
   template:
+    metadata:
+      labels:
+        component: postgresql-migrate-devtron
     spec:
       containers:
       - name: postgresql-migrate-devtron
@@ -52,8 +57,13 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: postgresql-migrate-casbin
+  labels:
+    component: postgresql-migrate-casbin
 spec:
   template:
+    metadata:
+      labels:
+        component: postgresql-migrate-casbin
     spec:
       containers:
       - name: postgresql-migrate-casbin
@@ -90,8 +100,13 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: postgresql-migrate-gitsensor
+  labels:
+    component: postgresql-migrate-gitsensor
 spec:
   template:
+    metadata:
+      labels:
+        component: postgresql-migrate-gitsensor
     spec:
       containers:
       - name: postgresql-migrate-gitsensor
@@ -128,8 +143,13 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: postgresql-migrate-lens
+  labels:
+    component: postgresql-migrate-lens
 spec:
   template:
+    metadata:
+      labels:
+        component: postgresql-migrate-lens
     spec:
       containers:
       - name: postgresql-migrate-lens
