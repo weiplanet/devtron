@@ -307,8 +307,8 @@ func (impl ChartServiceImpl) Create(templateRequest TemplateRequest, ctx context
 		return nil, err
 	}
 	override = dst.Bytes()
-
 	err = impl.registerInArgo(chartGitAttr, ctx)
+	impl.logger.Infow("completed registerInArgo step","err",err,"repoUrl",chartGitAttr.RepoUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -477,7 +477,7 @@ func (impl ChartServiceImpl) registerInArgo(chartGitAttribute *util.ChartGitAttr
 	if err != nil {
 		impl.logger.Errorw("error in creating argo Repository ", "err", err)
 	}
-	impl.logger.Infow("repo registered in argo", "name", chartGitAttribute.RepoUrl)
+	impl.logger.Infow("repo registered in argo", "name", chartGitAttribute.RepoUrl, "chartLocation",chartGitAttribute.ChartLocation)
 	return err
 }
 

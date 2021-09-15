@@ -104,6 +104,7 @@ func (r ServiceClientImpl) Create(ctx context.Context, query *repository2.RepoCr
 	defer cancel()
 	client, err := getService(ctx, r.settings)
 	if err != nil {
+		r.logger.Infow("error in getService for creating repo in argo","err",err,"setting in service client",r.settings)
 		return nil, err
 	}
 	return client.Create(ctx, query)
