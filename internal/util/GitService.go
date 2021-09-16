@@ -126,7 +126,7 @@ func NewGitFactory(logger *zap.SugaredLogger, gitOpsRepository repository.GitOps
 	gitService := NewGitServiceImpl(cfg, logger, gitCliUtil)
 	client, err := NewGitLabClient(cfg, logger, gitService)
 	if err != nil {
-		return nil, err
+		logger.Errorw("error in creating gitOps client","err",err)
 	}
 	return &GitFactory{
 		Client:           client,
