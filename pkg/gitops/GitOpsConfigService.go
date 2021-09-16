@@ -231,7 +231,12 @@ func (impl *GitOpsConfigServiceImpl) CreateGitOpsConfig(request *bean2.GitOpsCon
 
 		}
 	}
-
+	if strings.ToUpper(request.Provider) == GITHUB_PROVIDER{
+		request.Host = GITHUB_HOST + request.GitHubOrgId
+	}
+	if strings.ToUpper(request.Provider) == GITLAB_PROVIDER{
+		request.Host = GITLAB_HOST + impl.gitFactory.GetGitLabGroupPath(request)
+	}
 	operationComplete := false
 	retryCount := 0
 	for !operationComplete && retryCount < 3 {
@@ -382,7 +387,12 @@ func (impl *GitOpsConfigServiceImpl) UpdateGitOpsConfig(request *bean2.GitOpsCon
 
 		}
 	}
-
+	if strings.ToUpper(request.Provider) == GITHUB_PROVIDER{
+		request.Host = GITHUB_HOST + request.GitHubOrgId
+	}
+	if strings.ToUpper(request.Provider) == GITLAB_PROVIDER{
+		request.Host = GITLAB_HOST + impl.gitFactory.GetGitLabGroupPath(request)
+	}
 	operationComplete := false
 	retryCount := 0
 	for !operationComplete && retryCount < 3 {
@@ -569,7 +579,7 @@ func (impl *GitOpsConfigServiceImpl) GitOpsValidateDryRun(config *bean2.GitOpsCo
 	detailedErrorGitOpsConfigActions := util.DetailedErrorGitOpsConfigActions{}
 	detailedErrorGitOpsConfigActions.StageErrorMap = make(map[string]error)
 	if strings.ToUpper(config.Provider) == GITHUB_PROVIDER{
-		config.Host = GITHUB_HOST + config.GitHubOrgId
+		config.Host = GITHUB_HOST
 	}
 	if strings.ToUpper(config.Provider) == GITLAB_PROVIDER{
 		config.Host = GITLAB_HOST
@@ -581,9 +591,6 @@ func (impl *GitOpsConfigServiceImpl) GitOpsValidateDryRun(config *bean2.GitOpsCo
 		detailedErrorGitOpsConfigActions.ValidatedOn = time.Now()
 		detailedErrorGitOpsConfigResponse := impl.convertDetailedErrorToResponse(detailedErrorGitOpsConfigActions)
 		return detailedErrorGitOpsConfigResponse
-	}
-	if strings.ToUpper(config.Provider) == GITLAB_PROVIDER{
-		config.Host += impl.gitFactory.GetGitLabGroupPath(config)
 	}
 	appName := DryrunRepoName + util2.Generate(6)
 	repoUrl, _, detailedErrorCreateRepo := client.CreateRepository(appName, "sample dry-run repo")
