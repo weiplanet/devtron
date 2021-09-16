@@ -299,7 +299,10 @@ func (impl *GitOpsConfigServiceImpl) UpdateGitOpsConfig(request *bean2.GitOpsCon
 		return err
 	}
 	if strings.ToUpper(request.Provider) == GITHUB_PROVIDER{
-		request.Host = GITHUB_HOST
+		request.Host = GITHUB_HOST + request.GitHubOrgId
+	}
+	if strings.ToUpper(request.Provider) == GITLAB_PROVIDER{
+		request.Host = GITLAB_HOST + impl.gitFactory.GetGitLabGroupPath(request)
 	}
 	if request.Active {
 		if existingModel != nil && existingModel.Id > 0 && existingModel.Id != model.Id {
