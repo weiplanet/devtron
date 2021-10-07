@@ -16,7 +16,7 @@ spec:
               number: 80
         path: /orchestrator
       - backend:
-          ervice:
+          service:
             name: devtron-service
             port:
               number: 80
