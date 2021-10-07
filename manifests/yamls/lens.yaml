@@ -182,7 +182,7 @@ spec:
     app: lens
 ---
 # Source: lens/templates/hpa.yaml
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
  name: lens-hpa
@@ -195,13 +195,17 @@ spec:
  maxReplicas: 2
  metrics:
    - type: Resource
-     resource:
-       name: memory
-       targetAverageUtilization: 90
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 90
    - type: Resource
-     resource:
-       name: cpu
-       targetAverageUtilization: 80
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
 ---
 # Source: lens/templates/deployment.yaml
 apiVersion: apps/v1
