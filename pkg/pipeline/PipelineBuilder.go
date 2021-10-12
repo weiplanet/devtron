@@ -229,11 +229,12 @@ func (impl PipelineBuilderImpl) GetApp(appId int) (application *bean.CreateAppDT
 	var gitMaterials []*bean.GitMaterial
 	for _, material := range materials {
 		gitMaterial := &bean.GitMaterial{
-			Url:           material.Url,
-			Name:          material.Name[strings.Index(material.Name, "-")+1:],
-			Id:            material.Id,
-			GitProviderId: material.GitProviderId,
-			CheckoutPath:  material.CheckoutPath,
+			Url:             material.Url,
+			Name:            material.Name[strings.Index(material.Name, "-")+1:],
+			Id:              material.Id,
+			GitProviderId:   material.GitProviderId,
+			CheckoutPath:    material.CheckoutPath,
+			FetchSubmodules: material.FetchSubmodules,
 		}
 		gitMaterials = append(gitMaterials, gitMaterial)
 	}
@@ -1126,7 +1127,15 @@ func (impl PipelineBuilderImpl) createCdPipeline(ctx context.Context, app *pipel
 		ChartLocation:  chart.ChartLocation,
 		ReleaseMessage: fmt.Sprintf("release-%d-env-%d ", 0, envOverride.TargetEnvironment),
 	}
-	_, err = impl.GitFactory.Client.CommitValues(chartGitAttr)
+	gitOpsConfigBitbucket, err := impl.GitFactory.GitOpsRepository.GetGitOpsConfigByProvider(util.BITBUCKET_PROVIDER)
+	if err != nil {
+		if err == pg.ErrNoRows {
+			gitOpsConfigBitbucket.BitBucketWorkspaceId = ""
+		} else{
+			return 0, err
+		}
+	}
+	_, err = impl.GitFactory.Client.CommitValues(chartGitAttr, gitOpsConfigBitbucket.BitBucketWorkspaceId)
 	if err != nil {
 		impl.logger.Errorw("error in git commit", "err", err)
 		return 0, err

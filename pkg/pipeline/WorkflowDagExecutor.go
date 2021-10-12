@@ -21,6 +21,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/argoproj/argo-cd/pkg/apis/application/v1alpha1"
 	"github.com/devtron-labs/devtron/api/bean"
 	client "github.com/devtron-labs/devtron/client/events"
@@ -40,9 +44,6 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/nats-io/stan.go"
 	"go.uber.org/zap"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type WorkflowDagExecutor interface {
@@ -475,23 +476,24 @@ func (impl *WorkflowDagExecutorImpl) buildWFRequest(runner *pipelineConfig.CdWor
 			return nil, err
 		}
 		ciProjectDetail := CiProjectDetails{
-			GitRepository: ciMaterialCurrent.Material.GitConfiguration.URL,
-			MaterialName:  gitMaterial.Name,
-			CheckoutPath:  gitMaterial.CheckoutPath,
-			CommitHash:    ciMaterialCurrent.Modifications[0].Revision,
-			Author:        ciMaterialCurrent.Modifications[0].Author,
-			SourceType:    m.Type,
-			SourceValue:   m.Value,
-			GitTag:        ciMaterialCurrent.Modifications[0].Tag,
-			Message:       ciMaterialCurrent.Modifications[0].Message,
-			Type:          string(m.Type),
-			CommitTime:    *commitTime,
+			GitRepository:   ciMaterialCurrent.Material.GitConfiguration.URL,
+			MaterialName:    gitMaterial.Name,
+			CheckoutPath:    gitMaterial.CheckoutPath,
+			FetchSubmodules: gitMaterial.FetchSubmodules,
+			CommitHash:      ciMaterialCurrent.Modifications[0].Revision,
+			Author:          ciMaterialCurrent.Modifications[0].Author,
+			SourceType:      m.Type,
+			SourceValue:     m.Value,
+			GitTag:          ciMaterialCurrent.Modifications[0].Tag,
+			Message:         ciMaterialCurrent.Modifications[0].Message,
+			Type:            string(m.Type),
+			CommitTime:      *commitTime,
 			GitOptions: GitOptions{
-				UserName:    gitMaterial.GitProvider.UserName,
-				Password:    gitMaterial.GitProvider.Password,
-				SSHKey:      gitMaterial.GitProvider.SshKey,
-				AccessToken: gitMaterial.GitProvider.AccessToken,
-				AuthMode:    gitMaterial.GitProvider.AuthMode,
+				UserName:      gitMaterial.GitProvider.UserName,
+				Password:      gitMaterial.GitProvider.Password,
+				SshPrivateKey: gitMaterial.GitProvider.SshPrivateKey,
+				AccessToken:   gitMaterial.GitProvider.AccessToken,
+				AuthMode:      gitMaterial.GitProvider.AuthMode,
 			},
 		}
 
@@ -534,6 +536,8 @@ func (impl *WorkflowDagExecutorImpl) buildWFRequest(runner *pipelineConfig.CdWor
 		DockerUsername:        ciPipeline.CiTemplate.DockerRegistry.Username,
 		DockerPassword:        ciPipeline.CiTemplate.DockerRegistry.Password,
 		AwsRegion:             ciPipeline.CiTemplate.DockerRegistry.AWSRegion,
+		DockerConnection:      ciPipeline.CiTemplate.DockerRegistry.Connection,
+		DockerCert:            ciPipeline.CiTemplate.DockerRegistry.Cert,
 		AccessKey:             ciPipeline.CiTemplate.DockerRegistry.AWSAccessKeyId,
 		SecretKey:             ciPipeline.CiTemplate.DockerRegistry.AWSSecretAccessKey,
 		DockerRegistryType:    string(ciPipeline.CiTemplate.DockerRegistry.RegistryType),

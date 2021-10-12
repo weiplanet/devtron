@@ -19,17 +19,18 @@ package pipeline
 
 import (
 	"fmt"
+	"path/filepath"
+	"strconv"
+	"time"
+
 	"github.com/argoproj/argo/pkg/apis/workflow/v1alpha1"
-	"github.com/devtron-labs/devtron/client/events"
+	client "github.com/devtron-labs/devtron/client/events"
 	"github.com/devtron-labs/devtron/internal/middleware"
 	"github.com/devtron-labs/devtron/internal/sql/repository/pipelineConfig"
 	"github.com/devtron-labs/devtron/internal/util"
 	"github.com/devtron-labs/devtron/pkg/bean"
 	util2 "github.com/devtron-labs/devtron/util/event"
 	"go.uber.org/zap"
-	"path/filepath"
-	"strconv"
-	"time"
 )
 
 type CiService interface {
@@ -248,23 +249,24 @@ func (impl *CiServiceImpl) buildWfRequestForCiPipeline(pipeline *pipelineConfig.
 	for _, ciMaterial := range ciMaterials {
 		commitHashForPipelineId := commitHashes[ciMaterial.Id]
 		ciProjectDetail := CiProjectDetails{
-			GitRepository: ciMaterial.GitMaterial.Url,
-			MaterialName:  ciMaterial.GitMaterial.Name,
-			CheckoutPath:  ciMaterial.GitMaterial.CheckoutPath,
-			CommitHash:    commitHashForPipelineId.Commit,
-			Author:        commitHashForPipelineId.Author,
-			SourceType:    ciMaterial.Type,
-			SourceValue:   ciMaterial.Value,
-			GitTag:        ciMaterial.GitTag,
-			Message:       commitHashForPipelineId.Message,
-			Type:          string(ciMaterial.Type),
-			CommitTime:    commitHashForPipelineId.Date,
+			GitRepository:   ciMaterial.GitMaterial.Url,
+			MaterialName:    ciMaterial.GitMaterial.Name,
+			CheckoutPath:    ciMaterial.GitMaterial.CheckoutPath,
+			FetchSubmodules: ciMaterial.GitMaterial.FetchSubmodules,
+			CommitHash:      commitHashForPipelineId.Commit,
+			Author:          commitHashForPipelineId.Author,
+			SourceType:      ciMaterial.Type,
+			SourceValue:     ciMaterial.Value,
+			GitTag:          ciMaterial.GitTag,
+			Message:         commitHashForPipelineId.Message,
+			Type:            string(ciMaterial.Type),
+			CommitTime:      commitHashForPipelineId.Date,
 			GitOptions: GitOptions{
-				UserName:    ciMaterial.GitMaterial.GitProvider.UserName,
-				Password:    ciMaterial.GitMaterial.GitProvider.Password,
-				SSHKey:      ciMaterial.GitMaterial.GitProvider.SshKey,
-				AccessToken: ciMaterial.GitMaterial.GitProvider.AccessToken,
-				AuthMode:    ciMaterial.GitMaterial.GitProvider.AuthMode,
+				UserName:      ciMaterial.GitMaterial.GitProvider.UserName,
+				Password:      ciMaterial.GitMaterial.GitProvider.Password,
+				SshPrivateKey: ciMaterial.GitMaterial.GitProvider.SshPrivateKey,
+				AccessToken:   ciMaterial.GitMaterial.GitProvider.AccessToken,
+				AuthMode:      ciMaterial.GitMaterial.GitProvider.AuthMode,
 			},
 		}
 
@@ -346,6 +348,8 @@ func (impl *CiServiceImpl) buildWfRequestForCiPipeline(pipeline *pipelineConfig.
 		AwsRegion:                pipeline.CiTemplate.DockerRegistry.AWSRegion,
 		AccessKey:                pipeline.CiTemplate.DockerRegistry.AWSAccessKeyId,
 		SecretKey:                pipeline.CiTemplate.DockerRegistry.AWSSecretAccessKey,
+		DockerConnection:         pipeline.CiTemplate.DockerRegistry.Connection,
+		DockerCert:               pipeline.CiTemplate.DockerRegistry.Cert,
 		CiCacheFileName:          pipeline.Name + "-" + strconv.Itoa(pipeline.Id) + ".tar.gz",
 		CiProjectDetails:         ciProjectDetails,
 		Namespace:                ciWorkflowConfig.Namespace,

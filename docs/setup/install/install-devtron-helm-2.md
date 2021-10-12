@@ -7,9 +7,9 @@ To install Helm2, please check [Installing Helm2](https://v2.helm.sh/docs/instal
 This installation will use Minio for storing build logs and cache. 
 ```bash
 kubectl create namespace devtroncd
-kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron/main/manifests/crds/crd-devtron.yaml
 helm repo add devtron https://helm.devtron.ai
-helm install devtron devtron/devtron-operator --namespace devtroncd 
+helm install devtron devtron/devtron-operator --namespace devtroncd --set installer.source=gitee
 ```
 {% endtab %}
 
@@ -18,7 +18,7 @@ This installation will use AWS s3 buckets for storing build logs and cache
 
 ```bash
 kubectl create namespace devtroncd
-kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron/main/manifests/crds/crd-devtron.yaml
 helm repo add devtron https://helm.devtron.ai
 helm install devtron devtron/devtron-operator --namespace devtroncd \
 --set configs.BLOB_STORAGE_PROVIDER=S3 \
@@ -34,13 +34,27 @@ This installation will use Azure Blob Storage for storing build logs and cache
 
 ```bash
 kubectl create namespace devtroncd
-kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron/main/manifests/crds/crd-devtron.yaml
 helm repo add devtron https://helm.devtron.ai
 helm install devtron devtron/devtron-operator --namespace devtroncd \
 --set configs.BLOB_STORAGE_PROVIDER=AZURE \
 --set configs.AZURE_ACCOUNT_NAME=test-account \
 --set configs.AZURE_BLOB_CONTAINER_CI_LOG=ci-log-container \
 --set configs.AZURE_BLOB_CONTAINER_CI_CACHE=ci-cache-container
+```
+{% endtab %}
+{% endtabs %}
+
+For those countries/users where Github is blocked , you can use Gitee as the installation source.
+
+{% tabs %}
+{% tab title="Install with Gitee" %}
+```bash
+kubectl create namespace devtroncd
+
+kubectl apply -f https://gitee.com/devtron-labs/devtron/raw/main/manifests/crds/crd-devtron.yaml
+
+helm install devtron devtron/devtron-operator --namespace devtroncd --set installer.source=gitee
 ```
 {% endtab %}
 {% endtabs %}
