@@ -9,15 +9,17 @@ spec:
   rules:
   - http:
       paths:
-      - backend:
+      - defaultBackend:
           service:
             name: devtron-service
             port:
               number: 80
         path: /orchestrator
-      - backend:
+        pathType: ImplementationSpecific
+      - defaultBackend:
           service:
             name: devtron-service
             port:
               number: 80
         path: /dashboard
+        pathType: ImplementationSpecific
