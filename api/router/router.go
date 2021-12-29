@@ -300,7 +300,7 @@ func (r MuxRouter) Init() {
 	webhookListenerRouter := r.Router.PathPrefix("/orchestrator/webhook/git").Subrouter()
 	r.WebhookListenerRouter.InitWebhookListenerRouter(webhookListenerRouter)
 
-	pProfListenerRouter := r.Router.PathPrefix("/debug").Subrouter()
+	pProfListenerRouter := r.Router.PathPrefix("/orchestrator/debug").Subrouter()
 	r.pProfRouter.initPProfRouter(pProfListenerRouter)
 
 }
