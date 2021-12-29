@@ -23,6 +23,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	_ "net/http/pprof"
 )
 
 func main() {
