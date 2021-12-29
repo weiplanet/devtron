@@ -27,10 +27,15 @@ func NewPProfRouterImpl(logger *zap.SugaredLogger,
 
 func (impl PProfRouterImpl) initPProfRouter(router *mux.Router) {
 
-	router.Handle("/pprof/", http.HandlerFunc(pprof.Index))
-	router.Handle("/pprof/cmdline", http.HandlerFunc(pprof.Cmdline))
-	router.Handle("/pprof/profile", http.HandlerFunc(pprof.Profile))
-	router.Handle("/pprof/symbol", http.HandlerFunc(pprof.Symbol))
-	router.Handle("/pprof/trace", http.HandlerFunc(pprof.Trace))
-
+	router.Handle("/", http.HandlerFunc(pprof.Index))
+	router.Handle("/cmdline", http.HandlerFunc(pprof.Cmdline))
+	router.Handle("/profile", http.HandlerFunc(pprof.Profile))
+	router.Handle("/symbol", http.HandlerFunc(pprof.Symbol))
+	router.Handle("/trace", http.HandlerFunc(pprof.Trace))
+	router.Handle("/goroutine", pprof.Handler("goroutine"))
+	router.Handle("/threadcreate", pprof.Handler("threadcreate"))
+	router.Handle("/heap", pprof.Handler("heap"))
+	router.Handle("/block", pprof.Handler("block"))
+	router.Handle("/mutex", pprof.Handler("mutex"))
+	router.Handle("/allocs", pprof.Handler("allocs"))
 }
