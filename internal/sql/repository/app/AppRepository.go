@@ -130,7 +130,8 @@ func (repo AppRepositoryImpl) FindById(id int) (*App, error) {
 
 func (repo AppRepositoryImpl) FindAppsByTeamId(teamId int) ([]App, error) {
 	var apps []App
-	err := repo.dbConnection.Model(&apps).Where("team_id = ?", teamId).Select()
+	err := repo.dbConnection.Model(&apps).Column("Team").Where("team_id = ?", teamId).
+		Where("app.active=?", true).Select()
 	return apps, err
 }
 
@@ -151,7 +152,7 @@ func (repo AppRepositoryImpl) FindAppsByTeamName(teamName string) ([]App, error)
 
 func (repo AppRepositoryImpl) FindAll() ([]App, error) {
 	var apps []App
-	err := repo.dbConnection.Model(&apps).Where("active = ?", true).Where("app_store = ?", false).Select()
+	err := repo.dbConnection.Model(&apps).Column("Team").Where("app.active = ?", true).Where("app_store = ?", false).Select()
 	return apps, err
 }
 

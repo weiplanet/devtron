@@ -1687,14 +1687,14 @@ func (impl PipelineBuilderImpl) BuildArtifactsForCdStage(pipelineId int, stageTy
 					impl.logger.Errorw("Error in parsing artifact material info", "err", err)
 				}
 				ciArtifact := bean.CiArtifactBean{
-					Id:                     wfr.CdWorkflow.CiArtifact.Id,
-					Image:                  wfr.CdWorkflow.CiArtifact.Image,
-					ImageDigest:            wfr.CdWorkflow.CiArtifact.ImageDigest,
-					MaterialInfo:           mInfo,
-					RunningOnParent:        runningOnParent,
-					Latest:                 latest,
-					Scanned:                wfr.CdWorkflow.CiArtifact.Scanned,
-					ScanEnabled:            wfr.CdWorkflow.CiArtifact.ScanEnabled,
+					Id:              wfr.CdWorkflow.CiArtifact.Id,
+					Image:           wfr.CdWorkflow.CiArtifact.Image,
+					ImageDigest:     wfr.CdWorkflow.CiArtifact.ImageDigest,
+					MaterialInfo:    mInfo,
+					RunningOnParent: runningOnParent,
+					Latest:          latest,
+					Scanned:         wfr.CdWorkflow.CiArtifact.Scanned,
+					ScanEnabled:     wfr.CdWorkflow.CiArtifact.ScanEnabled,
 				}
 				if !parent {
 					ciArtifact.Deployed = true
@@ -1730,12 +1730,12 @@ func (impl PipelineBuilderImpl) BuildArtifactsForCIParent(cdPipelineId int, ciAr
 				impl.logger.Errorw("Error in parsing artifact material info", "err", err, "artifact", artifact)
 			}
 			ciArtifacts = append(ciArtifacts, bean.CiArtifactBean{
-				Id:                     artifact.Id,
-				Image:                  artifact.Image,
-				ImageDigest:            artifact.ImageDigest,
-				MaterialInfo:           mInfo,
-				ScanEnabled:            artifact.ScanEnabled,
-				Scanned:                artifact.Scanned,
+				Id:           artifact.Id,
+				Image:        artifact.Image,
+				ImageDigest:  artifact.ImageDigest,
+				MaterialInfo: mInfo,
+				ScanEnabled:  artifact.ScanEnabled,
+				Scanned:      artifact.Scanned,
 			})
 		}
 	}
@@ -1831,7 +1831,7 @@ func (impl PipelineBuilderImpl) FindAppsByTeamId(teamId int) ([]AppBean, error) 
 		return nil, err
 	}
 	for _, app := range apps {
-		appsRes = append(appsRes, AppBean{Id: app.Id, Name: app.AppName})
+		appsRes = append(appsRes, AppBean{Id: app.Id, Name: app.AppName, TeamId: app.Team.Id, TeamName: app.Team.Name})
 	}
 	return appsRes, err
 }
@@ -1860,9 +1860,10 @@ type TeamAppBean struct {
 }
 
 type AppBean struct {
-	Id     int    `json:"id"`
-	Name   string `json:"name,notnull"`
-	TeamId int    `json:"teamId,omitempty"`
+	Id       int    `json:"id"`
+	Name     string `json:"name,notnull"`
+	TeamId   int    `json:"teamId,omitempty"`
+	TeamName string `json:"team_name,omitempty"`
 }
 
 func (impl PipelineBuilderImpl) GetAppListByTeamIds(teamIds []int) ([]*TeamAppBean, error) {
@@ -1908,7 +1909,7 @@ func (impl PipelineBuilderImpl) GetAppList() ([]AppBean, error) {
 		return nil, err
 	}
 	for _, app := range apps {
-		appsRes = append(appsRes, AppBean{Id: app.Id, Name: app.AppName})
+		appsRes = append(appsRes, AppBean{Id: app.Id, Name: app.AppName, TeamId: app.Team.Id, TeamName: app.Team.Name})
 	}
 	return appsRes, err
 }

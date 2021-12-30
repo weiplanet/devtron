@@ -1,12 +1,14 @@
 package app
 
 import (
+	"fmt"
 	"github.com/devtron-labs/devtron/api/restHandler/common"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
 	"github.com/devtron-labs/devtron/pkg/user/casbin"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type DevtronAppAutoCompleteRestHandler interface {
@@ -49,21 +51,70 @@ func (handler PipelineConfigRestHandlerImpl) GetAppListForAutocomplete(w http.Re
 		}
 	}
 
-	token := r.Header.Get("token")
-	var accessedApps []pipeline.AppBean
-	// RBAC
-	objects := handler.enforcerUtil.GetRbacObjectsForAllApps()
+	user, err := handler.userAuthService.GetById(userId)
+	if userId == 0 || err != nil {
+		common.WriteJsonResp(w, err, "Unauthorized User", http.StatusUnauthorized)
+		return
+	}
+	userEmailId := strings.ToLower(user.EmailId)
+
+	isActionUserSuperAdmin, err := handler.userAuthService.IsSuperAdmin(int(userId))
+	if err != nil {
+		handler.Logger.Errorw("request err, GetAppListForAutocomplete", "err", err, "userId", userId)
+		common.WriteJsonResp(w, err, "Failed to check is super admin", http.StatusInternalServerError)
+		return
+	}
+	if isActionUserSuperAdmin {
+		common.WriteJsonResp(w, err, apps, http.StatusOK)
+		return
+	}
+
+	uniqueTeams := make(map[int]string)
+	authorizedTeams := make(map[int]bool)
 	for _, app := range apps {
-		object := objects[app.Id]
-		if ok := handler.enforcer.Enforce(token, casbin.ResourceApplications, casbin.ActionGet, object); ok {
-			accessedApps = append(accessedApps, app)
+		if _, ok := uniqueTeams[app.TeamId]; !ok {
+			uniqueTeams[app.TeamId] = app.TeamName
 		}
 	}
-	// RBAC
-	if len(accessedApps) == 0 {
-		accessedApps = make([]pipeline.AppBean, 0)
+	for teamId, teamName := range uniqueTeams {
+		object := strings.ToLower(teamName)
+		if ok := handler.enforcer.EnforceByEmail(userEmailId, casbin.ResourceTeam, casbin.ActionGet, object); ok {
+			authorizedTeams[teamId] = true
+		}
 	}
-	common.WriteJsonResp(w, err, accessedApps, http.StatusOK)
+
+	var filteredApps []pipeline.AppBean
+	for _, app := range apps {
+		if _, ok := authorizedTeams[app.TeamId]; ok {
+			filteredApps = append(filteredApps, app)
+		}
+	}
+
+	authorizedApps := make([]pipeline.AppBean, 0)
+	for _, app := range filteredApps {
+		object := fmt.Sprintf("%s/%s", app.TeamName, app.Name)
+		object = strings.ToLower(object)
+		if ok := handler.enforcer.EnforceByEmail(userEmailId, casbin.ResourceApplications, casbin.ActionGet, object); ok {
+			authorizedApps = append(authorizedApps, app)
+		}
+	}
+
+
+	//token := r.Header.Get("token")
+	//var accessedApps []pipeline.AppBean
+	//// RBAC
+	//objects := handler.enforcerUtil.GetRbacObjectsForAllApps()
+	//for _, app := range apps {
+	//	object := objects[app.Id]
+	//	if ok := handler.enforcer.Enforce(token, casbin.ResourceApplications, casbin.ActionGet, object); ok {
+	//		accessedApps = append(accessedApps, app)
+	//	}
+	//}
+	// RBAC
+	if len(authorizedApps) == 0 {
+		authorizedApps = make([]pipeline.AppBean, 0)
+	}
+	common.WriteJsonResp(w, err, authorizedApps, http.StatusOK)
 }
 
 func (handler PipelineConfigRestHandlerImpl) EnvironmentListAutocomplete(w http.ResponseWriter, r *http.Request) {
