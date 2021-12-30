@@ -632,6 +632,9 @@ func InitializeApp() (*App, error) {
 		pipelineConfig.NewAppLabelRepositoryImpl,
 		wire.Bind(new(pipelineConfig.AppLabelRepository), new(*pipelineConfig.AppLabelRepositoryImpl)),
 		util2.NewGoJsonSchemaCustomFormatChecker,
+
+		router.NewPProfRouterImpl,
+		wire.Bind(new(router.PProfRouter), new(*router.PProfRouterImpl)),
 	)
 	return &App{}, nil
 }

@@ -24,7 +24,7 @@ import (
 )
 
 type ReleaseMetricsRouter interface {
-	initReleaseMetricsRouter(router *mux.Router)
+	initPProfRouter(router *mux.Router)
 }
 
 type ReleaseMetricsRouterImpl struct {
@@ -40,7 +40,7 @@ func NewReleaseMetricsRouterImpl(logger *zap.SugaredLogger,
 	}
 }
 
-func (impl ReleaseMetricsRouterImpl) initReleaseMetricsRouter(router *mux.Router) {
+func (impl ReleaseMetricsRouterImpl) initPProfRouter(router *mux.Router) {
 	router.Path("/reset-app-environment").
 		HandlerFunc(impl.releaseMetricsRestHandler.ResetDataForAppEnvironment).
 		Methods("POST")

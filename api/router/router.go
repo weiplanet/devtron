@@ -84,6 +84,7 @@ type MuxRouter struct {
 	WebhookListenerRouter            WebhookListenerRouter
 	appLabelsRouter                  AppLabelRouter
 	coreAppRouter                    CoreAppRouter
+	pProfRouter                      PProfRouter
 }
 
 func NewMuxRouter(logger *zap.SugaredLogger, HelmRouter HelmRouter, PipelineConfigRouter PipelineConfigRouter,
@@ -103,7 +104,9 @@ func NewMuxRouter(logger *zap.SugaredLogger, HelmRouter HelmRouter, PipelineConf
 	ReleaseMetricsRouter ReleaseMetricsRouter, deploymentGroupRouter DeploymentGroupRouter, batchOperationRouter BatchOperationRouter,
 	chartGroupRouter ChartGroupRouter, testSuitRouter TestSuitRouter, imageScanRouter ImageScanRouter,
 	policyRouter PolicyRouter, gitOpsConfigRouter GitOpsConfigRouter, dashboardRouter dashboard.DashboardRouter, attributesRouter AttributesRouter,
-	commonRouter CommonRouter, grafanaRouter GrafanaRouter, ssoLoginRouter sso.SsoLoginRouter, telemetryRouter TelemetryRouter, telemetryWatcher telemetry.TelemetryEventClient, bulkUpdateRouter BulkUpdateRouter, webhookListenerRouter WebhookListenerRouter, appLabelsRouter AppLabelRouter, coreAppRouter CoreAppRouter) *MuxRouter {
+	commonRouter CommonRouter, grafanaRouter GrafanaRouter, ssoLoginRouter sso.SsoLoginRouter, telemetryRouter TelemetryRouter,
+	telemetryWatcher telemetry.TelemetryEventClient, bulkUpdateRouter BulkUpdateRouter, webhookListenerRouter WebhookListenerRouter, appLabelsRouter AppLabelRouter,
+	coreAppRouter CoreAppRouter, pProfRouter PProfRouter) *MuxRouter {
 	r := &MuxRouter{
 		Router:                           mux.NewRouter(),
 		HelmRouter:                       HelmRouter,
@@ -152,6 +155,7 @@ func NewMuxRouter(logger *zap.SugaredLogger, HelmRouter HelmRouter, PipelineConf
 		WebhookListenerRouter:            webhookListenerRouter,
 		appLabelsRouter:                  appLabelsRouter,
 		coreAppRouter:                    coreAppRouter,
+		pProfRouter:                      pProfRouter,
 	}
 	return r
 }
@@ -246,7 +250,7 @@ func (r MuxRouter) Init() {
 	appStoreRouter := r.Router.PathPrefix("/orchestrator/app-store").Subrouter()
 	r.AppStoreRouter.initAppStoreRouter(appStoreRouter)
 	deploymentMetricsRouter := r.Router.PathPrefix("/orchestrator/deployment-metrics").Subrouter()
-	r.ReleaseMetricsRouter.initReleaseMetricsRouter(deploymentMetricsRouter)
+	r.ReleaseMetricsRouter.initPProfRouter(deploymentMetricsRouter)
 
 	deploymentGroupRouter := r.Router.PathPrefix("/orchestrator/deployment-group").Subrouter()
 	r.deploymentGroupRouter.initDeploymentGroupRouter(deploymentGroupRouter)
@@ -295,5 +299,8 @@ func (r MuxRouter) Init() {
 
 	webhookListenerRouter := r.Router.PathPrefix("/orchestrator/webhook/git").Subrouter()
 	r.WebhookListenerRouter.InitWebhookListenerRouter(webhookListenerRouter)
+
+	pProfListenerRouter := r.Router.PathPrefix("/orchestrator/debug/pprof").Subrouter()
+	r.pProfRouter.initPProfRouter(pProfListenerRouter)
 
 }
