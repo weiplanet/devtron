@@ -250,7 +250,7 @@ func (r MuxRouter) Init() {
 	appStoreRouter := r.Router.PathPrefix("/orchestrator/app-store").Subrouter()
 	r.AppStoreRouter.initAppStoreRouter(appStoreRouter)
 	deploymentMetricsRouter := r.Router.PathPrefix("/orchestrator/deployment-metrics").Subrouter()
-	r.ReleaseMetricsRouter.initPProfRouter(deploymentMetricsRouter)
+	r.ReleaseMetricsRouter.initReleaseMetricsRouter(deploymentMetricsRouter)
 
 	deploymentGroupRouter := r.Router.PathPrefix("/orchestrator/deployment-group").Subrouter()
 	r.deploymentGroupRouter.initDeploymentGroupRouter(deploymentGroupRouter)

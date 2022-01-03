@@ -132,8 +132,11 @@ func InitializeApp() (*App, error) {
 		return nil, err
 	}
 	userAuthRepositoryImpl := repository2.NewUserAuthRepositoryImpl(db, sugaredLogger)
-	localDevMode := _wireLocalDevModeValue
-	k8sClient, err := client2.NewK8sClient(localDevMode)
+	runtimeConfig, err := client2.GetRuntimeConfig()
+	if err != nil {
+		return nil, err
+	}
+	k8sClient, err := client2.NewK8sClient(runtimeConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -449,7 +452,6 @@ func InitializeApp() (*App, error) {
 }
 
 var (
-	_wireLocalDevModeValue     = client2.LocalDevMode(true)
 	_wireChartWorkingDirValue  = util.ChartWorkingDir("/tmp/charts/")
 	_wireRefChartDirValue      = pipeline.RefChartDir("scripts/devtron-reference-helm-charts")
 	_wireDefaultChartValue     = pipeline.DefaultChart("reference-app-rolling")
