@@ -264,11 +264,7 @@ func ServerResourceForGroupVersionKind(discoveryClient discovery.DiscoveryInterf
 }
 
 func (impl K8sClientServiceImpl) getNonNamespacedResourceKind(discoveryClient *discovery.DiscoveryClient) []string {
-	resourceList, err := discoveryClient.ServerPreferredResources()
-	if err != nil {
-		impl.logger.Errorw("error in getting server resource", "err", err)
-		return nil
-	}
+	resourceList, _ := discoveryClient.ServerPreferredResources()
 	var nonNamespacedKind []string
 	for _, resources := range resourceList {
 		for _, resource := range resources.APIResources {
