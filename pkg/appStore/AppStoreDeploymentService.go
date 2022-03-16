@@ -119,7 +119,8 @@ func NewInstalledAppServiceImpl(logger *zap.SugaredLogger,
 	envService cluster2.EnvironmentService, argoK8sClient argocdServer.ArgoK8sClient,
 	gitFactory *util.GitFactory, aCDAuthConfig *util2.ACDAuthConfig, gitOpsRepository repository3.GitOpsConfigRepository, userService user.UserService,
 	appStoreDeploymentService appStoreDeployment.AppStoreDeploymentService,
-	appStoreDeploymentFullModeService appStoreDeploymentFullMode.AppStoreDeploymentFullModeService) (*InstalledAppServiceImpl, error) {
+	appStoreDeploymentFullModeService appStoreDeploymentFullMode.AppStoreDeploymentFullModeService,
+	installedAppRepositoryHistory appStoreRepository.InstalledAppVersionHistoryRepository) (*InstalledAppServiceImpl, error) {
 	impl := &InstalledAppServiceImpl{
 		logger:                               logger,
 		installedAppRepository:               installedAppRepository,
@@ -143,6 +144,7 @@ func NewInstalledAppServiceImpl(logger *zap.SugaredLogger,
 		userService:                          userService,
 		appStoreDeploymentService:            appStoreDeploymentService,
 		appStoreDeploymentFullModeService:    appStoreDeploymentFullModeService,
+		installedAppRepositoryHistory:        installedAppRepositoryHistory,
 	}
 	err := impl.Subscribe()
 	if err != nil {
