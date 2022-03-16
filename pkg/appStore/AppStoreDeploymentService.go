@@ -101,6 +101,7 @@ type InstalledAppServiceImpl struct {
 	userService                          user.UserService
 	appStoreDeploymentService            appStoreDeployment.AppStoreDeploymentService
 	appStoreDeploymentFullModeService    appStoreDeploymentFullMode.AppStoreDeploymentFullModeService
+	installedAppRepositoryHistory        appStoreRepository.InstalledAppVersionHistoryRepository
 }
 
 func NewInstalledAppServiceImpl(logger *zap.SugaredLogger,
@@ -207,7 +208,9 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 			impl.logger.Errorw("error while fetching chart installed version", "error", err)
 			return nil, err
 		}
+		versionUpgrade := false
 		if installedAppVersionModel.AppStoreApplicationVersionId != installAppVersionRequest.AppStoreVersion {
+			// upgrade to new version of same chart
 			installedAppVersionModel.Active = false
 			installedAppVersionModel.UpdatedOn = time.Now()
 			installedAppVersionModel.UpdatedBy = installAppVersionRequest.UserId
@@ -246,7 +249,7 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 				impl.logger.Errorw("error while commit required dependencies to git", "error", err)
 				return nil, err
 			}
-
+			versionUpgrade = true
 		} else {
 			installedAppVersion = installedAppVersionModel
 		}
@@ -274,6 +277,13 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 			impl.logger.Errorw("error while fetching from db", "error", err)
 			return nil, err
 		}
+		if !versionUpgrade {
+			err = impl.updateInstallAppVersionHistory(installedAppVersion, tx)
+			if err != nil {
+				impl.logger.Errorw("error on creating history for chart deployment", "error", err)
+				return nil, err
+			}
+		}
 	}
 
 	//STEP 8: finish with return response
@@ -283,6 +293,21 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 		return nil, err
 	}
 	return installAppVersionRequest, nil
+}
+
+func (impl InstalledAppServiceImpl) updateInstallAppVersionHistory(installedAppVersion *appStoreRepository.InstalledAppVersions, tx *pg.Tx) error {
+	installedAppVersionHistory := &appStoreRepository.InstalledAppVersionHistory{
+		InstalledAppVersionId: installedAppVersion.Id,
+	}
+	installedAppVersionHistory.ValuesYamlRaw = installedAppVersion.ValuesYaml
+	installedAppVersionHistory.CreatedBy = installedAppVersion.UpdatedBy
+	installedAppVersionHistory.CreatedOn = time.Now()
+	_, err := impl.installedAppRepositoryHistory.CreateInstalledAppVersionHistory(installedAppVersionHistory, tx)
+	if err != nil {
+		impl.logger.Errorw("error while fetching from db", "error", err)
+		return err
+	}
+	return nil
 }
 
 func (impl InstalledAppServiceImpl) updateRequirementDependencies(environment *repository5.Environment, installedAppVersion *appStoreRepository.InstalledAppVersions,
