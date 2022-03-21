@@ -58,7 +58,8 @@ func (impl InstalledAppVersionHistoryRepositoryImpl) GetInstalledAppVersionHisto
 func (impl InstalledAppVersionHistoryRepositoryImpl) GetInstalledAppVersionHistoryByVersionId(installAppVersionId int) ([]*InstalledAppVersionHistory, error) {
 	var model []*InstalledAppVersionHistory
 	err := impl.dbConnection.Model(&model).
-		Where("installed_app_version_id.app_store_id = ?", installAppVersionId).
+		Column("installed_app_version_history.*").
+		Where("installed_app_version_history.installed_app_version_id = ?", installAppVersionId).
 		Select()
 	return model, err
 }

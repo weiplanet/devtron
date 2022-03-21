@@ -47,7 +47,7 @@ type InstalledAppRepository interface {
 	DeleteInstalledAppVersion(model *InstalledAppVersions) (*InstalledAppVersions, error)
 	GetInstalledAppVersionByInstalledAppId(id int) ([]*InstalledAppVersions, error)
 	GetConnection() (dbConnection *pg.DB)
-	GetInstalledAppVersionByInstalledAppIdMeta(appStoreApplicationId int) ([]*InstalledAppVersions, error)
+	GetInstalledAppVersionByInstalledAppIdMeta(installedAppId int) ([]*InstalledAppVersions, error)
 	GetClusterComponentByClusterId(clusterId int) ([]*InstalledApps, error)     //unused
 	GetClusterComponentByClusterIds(clusterIds []int) ([]*InstalledApps, error) //unused
 	GetInstalledAppVersionByAppIdAndEnvId(appId int, envId int) (*InstalledAppVersions, error)
@@ -333,11 +333,11 @@ func (impl InstalledAppRepositoryImpl) DeleteInstalledAppVersion(model *Installe
 	return model, nil
 }
 
-func (impl InstalledAppRepositoryImpl) GetInstalledAppVersionByInstalledAppId(id int) ([]*InstalledAppVersions, error) {
+func (impl InstalledAppRepositoryImpl) GetInstalledAppVersionByInstalledAppId(installedAppId int) ([]*InstalledAppVersions, error) {
 	model := make([]*InstalledAppVersions, 0)
 	err := impl.dbConnection.Model(&model).
 		Column("installed_app_versions.*").
-		Where("installed_app_versions.installed_app_id = ?", id).
+		Where("installed_app_versions.installed_app_id = ?", installedAppId).
 		Where("installed_app_versions.active = true").Select()
 
 	return model, err

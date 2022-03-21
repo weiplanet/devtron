@@ -470,11 +470,19 @@ func (handler *InstalledAppRestHandlerImpl) FetchAppDetailsForInstalledApp(w htt
 }
 
 func (handler *InstalledAppRestHandlerImpl) GetDeploymentHistory(w http.ResponseWriter, r *http.Request) {
-	_, err := handler.installedAppService.GetInstalledAppVersionHistory(469)
+	vars := mux.Vars(r)
+	installedAppId, err := strconv.Atoi(vars["installedAppId"])
+	if err != nil {
+		handler.Logger.Errorw("request err", "error", err, "installedAppId", installedAppId)
+		common.WriteJsonResp(w, err, nil, http.StatusBadRequest)
+		return
+	}
+
+	response, err := handler.installedAppService.GetInstalledAppVersionHistory(installedAppId)
 	if err != nil {
 		common.WriteJsonResp(w, err, nil, http.StatusInternalServerError)
 		return
 	}
 
-	common.WriteJsonResp(w, err, "", http.StatusOK)
+	common.WriteJsonResp(w, err, response, http.StatusOK)
 }

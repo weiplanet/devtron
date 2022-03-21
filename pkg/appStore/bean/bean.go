@@ -29,9 +29,9 @@ type InstallAppVersionHistoryDto struct {
 }
 type IavhDeploymentHistory struct {
 	ChartMetaData IavhChartMetaData `json:"chartMetaData,omitempty"`
-	DeployedAt    IavhDeployedAt    `json:"deployedAt,omitempty"`
+	DeployedAt    time.Time         `json:"deployedAt,omitempty"`
 	DockerImages  []string          `json:"dockerImages,omitempty"`
-	Version       int               `json:"version,omitempty"`
+	Version       string               `json:"version,omitempty"`
 }
 type IavhChartMetaData struct {
 	ChartName    string   `json:"chartName,omitempty"`
