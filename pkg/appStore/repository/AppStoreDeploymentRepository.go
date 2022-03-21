@@ -35,6 +35,7 @@ type InstalledAppRepository interface {
 	UpdateInstalledApp(model *InstalledApps, tx *pg.Tx) (*InstalledApps, error)
 	UpdateInstalledAppVersion(model *InstalledAppVersions, tx *pg.Tx) (*InstalledAppVersions, error)
 	GetInstalledApp(id int) (*InstalledApps, error)
+	GetInstalledAppByPath(path string) (*InstalledApps, error)
 	GetInstalledAppVersion(id int) (*InstalledAppVersions, error)
 	GetInstalledAppVersionAny(id int) (*InstalledAppVersions, error)
 	GetAllInstalledApps(filter *appStoreBean.AppStoreFilter) ([]InstalledAppsWithChartDetails, error)
@@ -48,6 +49,8 @@ type InstalledAppRepository interface {
 	GetInstalledAppVersionByInstalledAppId(id int) ([]*InstalledAppVersions, error)
 	GetConnection() (dbConnection *pg.DB)
 	GetInstalledAppVersionByInstalledAppIdMeta(installedAppId int) ([]*InstalledAppVersions, error)
+	GetLatestInstalledAppVersion(installedAppId int) (*InstalledAppVersions, error)
+	GetLatestInstalledAppVersionByGitHash(gitHash string) (*InstalledAppVersions, error)
 	GetClusterComponentByClusterId(clusterId int) ([]*InstalledApps, error)     //unused
 	GetClusterComponentByClusterIds(clusterIds []int) ([]*InstalledApps, error) //unused
 	GetInstalledAppVersionByAppIdAndEnvId(appId int, envId int) (*InstalledAppVersions, error)
@@ -72,6 +75,7 @@ type InstalledApps struct {
 	EnvironmentId  int                                   `sql:"environment_id,notnull"`
 	Active         bool                                  `sql:"active, notnull"`
 	GitOpsRepoName string                                `sql:"git_ops_repo_name"`
+	Path           string                                `sql:"path"`
 	Status         appStoreBean.AppstoreDeploymentStatus `sql:"status"`
 	App            app.App
 	Environment    repository.Environment
@@ -87,6 +91,8 @@ type InstalledAppVersions struct {
 	Active                       bool     `sql:"active, notnull"`
 	ReferenceValueId             int      `sql:"reference_value_id"`
 	ReferenceValueKind           string   `sql:"reference_value_kind"`
+	Status                       string   `sql:"status"`
+	GitHash                      string   `sql:"git_hash"`
 	sql.AuditLog
 	InstalledApp               InstalledApps
 	AppStoreApplicationVersion appStoreDiscoverRepository.AppStoreApplicationVersion
@@ -168,6 +174,14 @@ func (impl InstalledAppRepositoryImpl) GetInstalledApp(id int) (*InstalledApps, 
 	return model, err
 }
 
+func (impl InstalledAppRepositoryImpl) GetInstalledAppByPath(path string) (*InstalledApps, error) {
+	model := &InstalledApps{}
+	err := impl.dbConnection.Model(model).
+		Column("installed_apps.*", "App", "Environment").
+		Where("installed_apps.path = ?", path).Where("installed_apps.active = true").Select()
+	return model, err
+}
+
 func (impl InstalledAppRepositoryImpl) GetInstalledAppVersionByAppStoreId(appStoreId int) ([]*InstalledAppVersions, error) {
 	var model []*InstalledAppVersions
 	err := impl.dbConnection.Model(&model).
@@ -185,6 +199,26 @@ func (impl InstalledAppRepositoryImpl) GetInstalledAppVersionByInstalledAppIdMet
 		Column("AppStoreApplicationVersion.AppStore.ChartRepo").
 		Where("installed_app_versions.installed_app_id = ?", installedAppId).
 		Where("installed_app_versions.active = true").Select()
+	return model, err
+}
+
+func (impl InstalledAppRepositoryImpl) GetLatestInstalledAppVersion(installedAppId int) (*InstalledAppVersions, error) {
+	model := &InstalledAppVersions{}
+	err := impl.dbConnection.Model(&model).
+		Column("installed_app_versions.*", "InstalledApp", "InstalledApp.App", "InstalledApp.Environment", "AppStoreApplicationVersion", "AppStoreApplicationVersion.AppStore").
+		Column("AppStoreApplicationVersion.AppStore.ChartRepo").
+		Where("installed_app_versions.installed_app_id = ?", installedAppId).
+		Where("installed_app_versions.active = true").Order("id desc").Limit(1).Select()
+	return model, err
+}
+
+func (impl InstalledAppRepositoryImpl) GetLatestInstalledAppVersionByGitHash(gitHash string) (*InstalledAppVersions, error) {
+	model := &InstalledAppVersions{}
+	err := impl.dbConnection.Model(&model).
+		Column("installed_app_versions.*", "InstalledApp", "InstalledApp.App", "InstalledApp.Environment", "AppStoreApplicationVersion", "AppStoreApplicationVersion.AppStore").
+		Column("AppStoreApplicationVersion.AppStore.ChartRepo").
+		Where("installed_app_versions.git_hash = ?", gitHash).
+		Where("installed_app_versions.active = true").Order("id desc").Limit(1).Select()
 	return model, err
 }
 

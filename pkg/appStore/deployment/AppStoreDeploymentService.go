@@ -143,6 +143,7 @@ func (impl AppStoreDeploymentServiceImpl) AppStoreDeployOperationDB(installAppVe
 		AppId:         appCreateRequest.Id,
 		EnvironmentId: environment.Id,
 		Status:        appStoreBean.DEPLOY_INIT,
+		Path:          fmt.Sprintf("%s-%s", installAppVersionRequest.AppName, environment.Name),
 	}
 	installedAppModel.CreatedBy = installAppVersionRequest.UserId
 	installedAppModel.UpdatedBy = installAppVersionRequest.UserId
@@ -264,9 +265,9 @@ func (impl AppStoreDeploymentServiceImpl) InstallApp(installAppVersionRequest *a
 
 	if doActualInstallation {
 		if util2.GetDevtronVersion().ServerMode == util2.SERVER_MODE_HYPERION || installAppVersionRequest.AppOfferingMode == util2.SERVER_MODE_HYPERION {
-			err = impl.appStoreDeploymentHelmService.InstallApp(installAppVersionRequest, ctx)
+			_, err = impl.appStoreDeploymentHelmService.InstallApp(installAppVersionRequest, ctx)
 		} else {
-			err = impl.appStoreDeploymentArgoCdService.InstallApp(installAppVersionRequest, ctx)
+			installAppVersionRequest, err = impl.appStoreDeploymentArgoCdService.InstallApp(installAppVersionRequest, ctx)
 		}
 	}
 
@@ -285,6 +286,15 @@ func (impl AppStoreDeploymentServiceImpl) InstallApp(installAppVersionRequest *a
 	if err != nil {
 		impl.logger.Errorw(" error", "err", err)
 		return nil, err
+	}
+
+	//step 5 git-hash update
+	if len(installAppVersionRequest.GitHash) > 0 {
+		_, err = impl.InstalledAppVersionAndHistoryUpdate(installAppVersionRequest)
+		if err != nil {
+			impl.logger.Errorw(" error", "err", err)
+			return nil, err
+		}
 	}
 
 	return installAppVersionRequest, nil
@@ -614,4 +624,31 @@ func (impl AppStoreDeploymentServiceImpl) createEnvironmentIfNotExists(installAp
 	}
 
 	return envCreateRes.Id, nil
+}
+
+func (impl AppStoreDeploymentServiceImpl) InstalledAppVersionAndHistoryUpdate(installAppVersionRequest *appStoreBean.InstallAppVersionDTO) (bool, error) {
+	dbConnection := impl.installedAppRepository.GetConnection()
+	tx, err := dbConnection.Begin()
+	if err != nil {
+		return false, err
+	}
+	// Rollback tx on error.
+	defer tx.Rollback()
+	installedAppVersion, err := impl.installedAppRepository.GetInstalledAppVersion(installAppVersionRequest.InstalledAppVersionId)
+	if err != nil {
+		impl.logger.Errorw("error while fetching from db", "error", err)
+		return false, err
+	}
+	installedAppVersion.GitHash = installAppVersionRequest.GitHash
+	_, err = impl.installedAppRepository.UpdateInstalledAppVersion(installedAppVersion, tx)
+	if err != nil {
+		impl.logger.Errorw("error while fetching from db", "error", err)
+		return false, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		impl.logger.Errorw("error while commit db transaction to db", "error", err)
+		return false, err
+	}
+	return true, nil
 }

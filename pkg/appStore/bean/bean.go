@@ -31,7 +31,7 @@ type IavhDeploymentHistory struct {
 	ChartMetaData IavhChartMetaData `json:"chartMetaData,omitempty"`
 	DeployedAt    time.Time         `json:"deployedAt,omitempty"`
 	DockerImages  []string          `json:"dockerImages,omitempty"`
-	Version       string               `json:"version,omitempty"`
+	Version       string            `json:"version,omitempty"`
 }
 type IavhChartMetaData struct {
 	ChartName    string   `json:"chartName,omitempty"`
@@ -73,6 +73,8 @@ type InstallAppVersionDTO struct {
 	Namespace                 string                     `json:"namespace"` // needed for hyperion mode
 	AppOfferingMode           string                     `json:"appOfferingMode"`
 	GitOpsRepoName            string                     `json:"gitOpsRepoName"`
+	GitOpsPath                string                     `json:"gitOpsPath"`
+	GitHash                   string                     `json:"gitHash"`
 	EnvironmentName           string                     `json:"-"`
 	InstallAppVersionChartDTO *InstallAppVersionChartDTO `json:"-"`
 }
