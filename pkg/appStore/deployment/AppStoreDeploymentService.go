@@ -299,10 +299,19 @@ func (impl AppStoreDeploymentServiceImpl) InstallApp(installAppVersionRequest *a
 			impl.logger.Errorw(" error", "err", err)
 			return nil, err
 		}*/
-
+		tx, err := dbConnection.Begin()
+		if err != nil {
+			return nil, err
+		}
+		// Rollback tx on error.
+		defer tx.Rollback()
 		err = impl.UpdateInstallAppVersionHistory(installAppVersionRequest, tx)
 		if err != nil {
 			impl.logger.Errorw("error on creating history for chart deployment", "error", err)
+			return nil, err
+		}
+		err = tx.Commit()
+		if err != nil {
 			return nil, err
 		}
 	}
