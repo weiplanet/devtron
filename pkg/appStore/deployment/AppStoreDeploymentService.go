@@ -53,6 +53,7 @@ type AppStoreDeploymentService interface {
 	GetAllInstalledAppsByAppStoreId(w http.ResponseWriter, r *http.Request, token string, appStoreId int) ([]appStoreBean.InstalledAppsResponse, error)
 	DeleteInstalledApp(ctx context.Context, installAppVersionRequest *appStoreBean.InstallAppVersionDTO) (*appStoreBean.InstallAppVersionDTO, error)
 	LinkHelmApplicationToChartStore(ctx context.Context, request *openapi.UpdateReleaseWithChartLinkingRequest, appIdentifier *client.AppIdentifier, userId int32) (*openapi.UpdateReleaseResponse, bool, error)
+	UpdateInstallAppVersionHistory(installAppVersionRequest *appStoreBean.InstallAppVersionDTO, tx *pg.Tx) error
 }
 
 type AppStoreDeploymentServiceImpl struct {
@@ -69,6 +70,7 @@ type AppStoreDeploymentServiceImpl struct {
 	helmAppService                       client.HelmAppService
 	appStoreDeploymentCommonService      appStoreDeploymentCommon.AppStoreDeploymentCommonService
 	globalEnvVariables                   *util2.GlobalEnvVariables
+	installedAppRepositoryHistory        appStoreRepository.InstalledAppVersionHistoryRepository
 }
 
 func NewAppStoreDeploymentServiceImpl(logger *zap.SugaredLogger, installedAppRepository appStoreRepository.InstalledAppRepository,
@@ -77,7 +79,7 @@ func NewAppStoreDeploymentServiceImpl(logger *zap.SugaredLogger, installedAppRep
 	appStoreDeploymentHelmService appStoreDeploymentTool.AppStoreDeploymentHelmService,
 	appStoreDeploymentArgoCdService appStoreDeploymentGitopsTool.AppStoreDeploymentArgoCdService, environmentService cluster.EnvironmentService,
 	clusterService cluster.ClusterService, helmAppService client.HelmAppService, appStoreDeploymentCommonService appStoreDeploymentCommon.AppStoreDeploymentCommonService,
-	globalEnvVariables *util2.GlobalEnvVariables) *AppStoreDeploymentServiceImpl {
+	globalEnvVariables *util2.GlobalEnvVariables, installedAppRepositoryHistory appStoreRepository.InstalledAppVersionHistoryRepository) *AppStoreDeploymentServiceImpl {
 	return &AppStoreDeploymentServiceImpl{
 		logger:                               logger,
 		installedAppRepository:               installedAppRepository,
@@ -92,6 +94,7 @@ func NewAppStoreDeploymentServiceImpl(logger *zap.SugaredLogger, installedAppRep
 		helmAppService:                       helmAppService,
 		appStoreDeploymentCommonService:      appStoreDeploymentCommonService,
 		globalEnvVariables:                   globalEnvVariables,
+		installedAppRepositoryHistory:        installedAppRepositoryHistory,
 	}
 }
 
@@ -180,7 +183,7 @@ func (impl AppStoreDeploymentServiceImpl) AppStoreDeployOperationDB(installAppVe
 		return nil, err
 	}
 	installAppVersionRequest.InstalledAppVersionId = installedAppVersions.Id
-
+	installAppVersionRequest.Id = installedAppVersions.Id
 	if installAppVersionRequest.DefaultClusterComponent {
 		clusterInstalledAppsModel := &appStoreRepository.ClusterInstalledApps{
 			ClusterId:      environment.ClusterId,
@@ -291,14 +294,38 @@ func (impl AppStoreDeploymentServiceImpl) InstallApp(installAppVersionRequest *a
 	//step 5 git-hash update
 	impl.logger.Infow(">>>> status update git hash update", "installAppVersionRequest", installAppVersionRequest)
 	if len(installAppVersionRequest.GitHash) > 0 {
-		_, err = impl.InstalledAppVersionAndHistoryUpdate(installAppVersionRequest)
+		/*_, err = impl.InstalledAppVersionAndHistoryUpdate(installAppVersionRequest)
 		if err != nil {
 			impl.logger.Errorw(" error", "err", err)
+			return nil, err
+		}*/
+
+		err = impl.UpdateInstallAppVersionHistory(installAppVersionRequest, tx)
+		if err != nil {
+			impl.logger.Errorw("error on creating history for chart deployment", "error", err)
 			return nil, err
 		}
 	}
 
 	return installAppVersionRequest, nil
+}
+func (impl AppStoreDeploymentServiceImpl) UpdateInstallAppVersionHistory(installAppVersionRequest *appStoreBean.InstallAppVersionDTO, tx *pg.Tx) error {
+	installedAppVersionHistory := &appStoreRepository.InstalledAppVersionHistory{
+		InstalledAppVersionId: installAppVersionRequest.Id,
+	}
+	installedAppVersionHistory.ValuesYamlRaw = installAppVersionRequest.ValuesOverrideYaml
+	installedAppVersionHistory.CreatedBy = installAppVersionRequest.UserId
+	installedAppVersionHistory.CreatedOn = time.Now()
+	installedAppVersionHistory.UpdatedBy = installAppVersionRequest.UserId
+	installedAppVersionHistory.UpdatedOn = time.Now()
+	installedAppVersionHistory.GitHash = installAppVersionRequest.GitHash
+	installedAppVersionHistory.Status = "Unknown"
+	_, err := impl.installedAppRepositoryHistory.CreateInstalledAppVersionHistory(installedAppVersionHistory, tx)
+	if err != nil {
+		impl.logger.Errorw("error while fetching from db", "error", err)
+		return err
+	}
+	return nil
 }
 
 func (impl AppStoreDeploymentServiceImpl) createAppForAppStore(createRequest *bean.CreateAppDTO, tx *pg.Tx, appInstallationMode string) (*bean.CreateAppDTO, error) {

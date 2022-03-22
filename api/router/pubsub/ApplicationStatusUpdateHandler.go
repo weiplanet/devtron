@@ -24,6 +24,7 @@ import (
 	"github.com/devtron-labs/devtron/pkg/app"
 	"github.com/devtron-labs/devtron/pkg/appStore"
 	"github.com/devtron-labs/devtron/pkg/pipeline"
+	"github.com/go-pg/pg"
 	"github.com/nats-io/stan.go"
 	"go.uber.org/zap"
 	"time"
@@ -80,10 +81,13 @@ func (impl *ApplicationStatusUpdateHandlerImpl) Subscribe() error {
 			impl.logger.Errorw("error on application status update", "err", err, "msg", string(msg.Data))
 
 			//TODO - check update for charts - fix this call
-			_, err := impl.installedAppService.UpdateInstalledAppVersionStatus(application)
-			if err != nil {
-				impl.logger.Errorw("error on application status update", "err", err, "msg", string(msg.Data))
-				return
+			if err == pg.ErrNoRows {
+				// if not found in charts (which is for devtron apps) try to find in installed app (which is for devtron charts)
+				_, err := impl.installedAppService.UpdateInstalledAppVersionStatus(application)
+				if err != nil {
+					impl.logger.Errorw("error on application status update", "err", err, "msg", string(msg.Data))
+					return
+				}
 			}
 			// return anyways weather updates or failure, no further processing for charts status update
 			return
