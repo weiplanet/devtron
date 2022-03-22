@@ -75,7 +75,6 @@ type InstalledApps struct {
 	EnvironmentId  int                                   `sql:"environment_id,notnull"`
 	Active         bool                                  `sql:"active, notnull"`
 	GitOpsRepoName string                                `sql:"git_ops_repo_name"`
-	Path           string                                `sql:"path"`
 	Status         appStoreBean.AppstoreDeploymentStatus `sql:"status"`
 	App            app.App
 	Environment    repository.Environment
@@ -91,8 +90,6 @@ type InstalledAppVersions struct {
 	Active                       bool     `sql:"active, notnull"`
 	ReferenceValueId             int      `sql:"reference_value_id"`
 	ReferenceValueKind           string   `sql:"reference_value_kind"`
-	Status                       string   `sql:"status"`
-	GitHash                      string   `sql:"git_hash"`
 	sql.AuditLog
 	InstalledApp               InstalledApps
 	AppStoreApplicationVersion appStoreDiscoverRepository.AppStoreApplicationVersion

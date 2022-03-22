@@ -156,7 +156,6 @@ func NewInstalledAppServiceImpl(logger *zap.SugaredLogger,
 }
 
 func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, installAppVersionRequest *appStoreBean.InstallAppVersionDTO) (*appStoreBean.InstallAppVersionDTO, error) {
-
 	dbConnection := impl.installedAppRepository.GetConnection()
 	tx, err := dbConnection.Begin()
 	if err != nil {
@@ -280,12 +279,6 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 			impl.logger.Errorw("error while fetching from db", "error", err)
 			return nil, err
 		}
-		err = impl.appStoreDeploymentService.UpdateInstallAppVersionHistory(installAppVersionRequest, tx)
-		if err != nil {
-			impl.logger.Errorw("error on creating history for chart deployment", "error", err)
-			return nil, err
-		}
-
 	}
 
 	//STEP 8: finish with return response
@@ -294,26 +287,14 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 		impl.logger.Errorw("error while committing transaction to db", "error", err)
 		return nil, err
 	}
-	return installAppVersionRequest, nil
-}
 
-func (impl InstalledAppServiceImpl) updateInstallAppVersionHistory(installAppVersionRequest *appStoreBean.InstallAppVersionDTO, tx *pg.Tx) error {
-	installedAppVersionHistory := &appStoreRepository.InstalledAppVersionHistory{
-		InstalledAppVersionId: installAppVersionRequest.Id,
-	}
-	installedAppVersionHistory.ValuesYamlRaw = installAppVersionRequest.ValuesOverrideYaml
-	installedAppVersionHistory.CreatedBy = installAppVersionRequest.UserId
-	installedAppVersionHistory.CreatedOn = time.Now()
-	installedAppVersionHistory.UpdatedBy = installAppVersionRequest.UserId
-	installedAppVersionHistory.UpdatedOn = time.Now()
-	installedAppVersionHistory.GitHash = installAppVersionRequest.GitHash
-	installedAppVersionHistory.Status = "Unknown"
-	_, err := impl.installedAppRepositoryHistory.CreateInstalledAppVersionHistory(installedAppVersionHistory, tx)
+	// create build history for version upgrade, chart upgrade or simple update
+	err = impl.appStoreDeploymentService.UpdateInstallAppVersionHistory(installAppVersionRequest)
 	if err != nil {
-		impl.logger.Errorw("error while fetching from db", "error", err)
-		return err
+		impl.logger.Errorw("error on creating history for chart deployment", "error", err)
+		return nil, err
 	}
-	return nil
+	return installAppVersionRequest, nil
 }
 
 func (impl InstalledAppServiceImpl) updateRequirementDependencies(environment *repository5.Environment, installedAppVersion *appStoreRepository.InstalledAppVersions,
@@ -472,13 +453,6 @@ func (impl InstalledAppServiceImpl) upgradeInstalledApp(ctx context.Context, ins
 	_, err = impl.installedAppRepository.UpdateInstalledApp(installedApp, tx)
 	if err != nil {
 		impl.logger.Errorw("error while fetching from db", "error", err)
-		return installAppVersionRequest, installedAppVersion, err
-	}
-
-	//step 5 - create build history for this
-	err = impl.updateInstallAppVersionHistory(installAppVersionRequest, tx)
-	if err != nil {
-		impl.logger.Errorw("error on creating history for chart deployment", "error", err)
 		return installAppVersionRequest, installedAppVersion, err
 	}
 
@@ -709,7 +683,7 @@ func (impl InstalledAppServiceImpl) performDeployStage(installedAppVersionId int
 		installedAppVersion.Status == appStoreBean.QUE_ERROR ||
 		installedAppVersion.Status == appStoreBean.GIT_ERROR {
 		//step 2 git operation pull push
-		_, chartGitAttrDB, err := impl.appStoreDeploymentFullModeService.AppStoreDeployOperationGIT(installedAppVersion)
+		installedAppVersion, chartGitAttrDB, err := impl.appStoreDeploymentFullModeService.AppStoreDeployOperationGIT(installedAppVersion)
 		if err != nil {
 			impl.logger.Errorw(" error", "err", err)
 			_, err = impl.appStoreDeploymentService.AppStoreDeployOperationStatusUpdate(installedAppVersion.InstalledAppId, appStoreBean.GIT_ERROR)
@@ -789,6 +763,13 @@ func (impl InstalledAppServiceImpl) performDeployStage(installedAppVersionId int
 	_, err = impl.appStoreDeploymentService.AppStoreDeployOperationStatusUpdate(installedAppVersion.InstalledAppId, appStoreBean.DEPLOY_SUCCESS)
 	if err != nil {
 		impl.logger.Errorw(" error", "err", err)
+		return nil, err
+	}
+
+	// create build history for chart on default component
+	err = impl.appStoreDeploymentService.UpdateInstallAppVersionHistory(installedAppVersion)
+	if err != nil {
+		impl.logger.Errorw("error on creating history for chart deployment", "error", err)
 		return nil, err
 	}
 	return installedAppVersion, nil
