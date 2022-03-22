@@ -254,6 +254,7 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 				return nil, err
 			}
 			versionUpgrade = true
+			installAppVersionRequest.Id = installedAppVersion.Id
 		} else {
 			installedAppVersion = installedAppVersionModel
 		}
@@ -282,7 +283,7 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 			return nil, err
 		}
 		if !versionUpgrade {
-			err = impl.updateInstallAppVersionHistory(installedAppVersion, tx)
+			err = impl.updateInstallAppVersionHistory(installAppVersionRequest, tx)
 			if err != nil {
 				impl.logger.Errorw("error on creating history for chart deployment", "error", err)
 				return nil, err
@@ -299,14 +300,17 @@ func (impl InstalledAppServiceImpl) UpdateInstalledApp(ctx context.Context, inst
 	return installAppVersionRequest, nil
 }
 
-func (impl InstalledAppServiceImpl) updateInstallAppVersionHistory(installedAppVersion *appStoreRepository.InstalledAppVersions, tx *pg.Tx) error {
+func (impl InstalledAppServiceImpl) updateInstallAppVersionHistory(installAppVersionRequest *appStoreBean.InstallAppVersionDTO, tx *pg.Tx) error {
 	installedAppVersionHistory := &appStoreRepository.InstalledAppVersionHistory{
-		InstalledAppVersionId: installedAppVersion.Id,
+		InstalledAppVersionId: installAppVersionRequest.Id,
 	}
-	installedAppVersionHistory.ValuesYamlRaw = installedAppVersion.ValuesYaml
-	installedAppVersionHistory.CreatedBy = installedAppVersion.UpdatedBy
+	installedAppVersionHistory.ValuesYamlRaw = installAppVersionRequest.ValuesOverrideYaml
+	installedAppVersionHistory.CreatedBy = installAppVersionRequest.UserId
 	installedAppVersionHistory.CreatedOn = time.Now()
-	installedAppVersionHistory.GitHash = installedAppVersion.GitHash
+	installedAppVersionHistory.UpdatedBy = installAppVersionRequest.UserId
+	installedAppVersionHistory.UpdatedOn = time.Now()
+	installedAppVersionHistory.GitHash = installAppVersionRequest.GitHash
+	installedAppVersionHistory.Status = "Unknown"
 	_, err := impl.installedAppRepositoryHistory.CreateInstalledAppVersionHistory(installedAppVersionHistory, tx)
 	if err != nil {
 		impl.logger.Errorw("error while fetching from db", "error", err)
@@ -1207,6 +1211,7 @@ func (impl InstalledAppServiceImpl) UpdateInstalledAppVersionStatus(application 
 	if installedAppVersion.Id > 0 {
 		installedAppVersion.Status = application.Status.Health.Status
 		installedAppVersion.UpdatedOn = time.Now()
+		installedAppVersion.UpdatedBy = 1
 		impl.installedAppRepository.UpdateInstalledAppVersion(installedAppVersion, tx)
 	} else if installedAppVersion.Id == 0 {
 		versionHistory, err := impl.installedAppRepositoryHistory.GetLatestInstalledAppVersionHistoryByGitHash(gitHash)
@@ -1216,6 +1221,7 @@ func (impl InstalledAppServiceImpl) UpdateInstalledAppVersionStatus(application 
 		}
 		versionHistory.Status = application.Status.Health.Status
 		versionHistory.UpdatedOn = time.Now()
+		versionHistory.UpdatedBy = 1
 		impl.installedAppRepositoryHistory.UpdateInstalledAppVersionHistory(versionHistory, tx)
 	}
 

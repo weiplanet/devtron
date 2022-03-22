@@ -221,6 +221,7 @@ func (impl AppStoreDeploymentFullModeServiceImpl) AppStoreDeployOperationGIT(ins
 		impl.logger.Errorw("error in git pull", "err", err)
 		return nil, nil, err
 	}
+	impl.logger.Infow(">>>> status update values commit hash", "commitHash", commitHash, "installAppVersionRequest", installAppVersionRequest)
 	installAppVersionRequest.GitHash = commitHash
 	installAppVersionRequest.ACDAppName = argocdAppName
 	installAppVersionRequest.Environment = environment

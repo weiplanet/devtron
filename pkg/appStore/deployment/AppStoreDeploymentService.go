@@ -289,6 +289,7 @@ func (impl AppStoreDeploymentServiceImpl) InstallApp(installAppVersionRequest *a
 	}
 
 	//step 5 git-hash update
+	impl.logger.Infow(">>>> status update git hash update", "installAppVersionRequest", installAppVersionRequest)
 	if len(installAppVersionRequest.GitHash) > 0 {
 		_, err = impl.InstalledAppVersionAndHistoryUpdate(installAppVersionRequest)
 		if err != nil {
@@ -640,6 +641,8 @@ func (impl AppStoreDeploymentServiceImpl) InstalledAppVersionAndHistoryUpdate(in
 		return false, err
 	}
 	installedAppVersion.GitHash = installAppVersionRequest.GitHash
+	installedAppVersion.UpdatedBy = installAppVersionRequest.UserId
+	installedAppVersion.UpdatedOn = time.Now()
 	_, err = impl.installedAppRepository.UpdateInstalledAppVersion(installedAppVersion, tx)
 	if err != nil {
 		impl.logger.Errorw("error while fetching from db", "error", err)
