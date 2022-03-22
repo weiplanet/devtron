@@ -204,7 +204,7 @@ func (impl InstalledAppRepositoryImpl) GetInstalledAppVersionByInstalledAppIdMet
 
 func (impl InstalledAppRepositoryImpl) GetLatestInstalledAppVersion(installedAppId int) (*InstalledAppVersions, error) {
 	model := &InstalledAppVersions{}
-	err := impl.dbConnection.Model(&model).
+	err := impl.dbConnection.Model(model).
 		Column("installed_app_versions.*", "InstalledApp", "InstalledApp.App", "InstalledApp.Environment", "AppStoreApplicationVersion", "AppStoreApplicationVersion.AppStore").
 		Column("AppStoreApplicationVersion.AppStore.ChartRepo").
 		Where("installed_app_versions.installed_app_id = ?", installedAppId).
@@ -214,7 +214,7 @@ func (impl InstalledAppRepositoryImpl) GetLatestInstalledAppVersion(installedApp
 
 func (impl InstalledAppRepositoryImpl) GetLatestInstalledAppVersionByGitHash(gitHash string) (*InstalledAppVersions, error) {
 	model := &InstalledAppVersions{}
-	err := impl.dbConnection.Model(&model).
+	err := impl.dbConnection.Model(model).
 		Column("installed_app_versions.*", "InstalledApp").
 		Column("AppStoreApplicationVersion.AppStore.ChartRepo").
 		Where("installed_app_versions.git_hash = ?", gitHash).

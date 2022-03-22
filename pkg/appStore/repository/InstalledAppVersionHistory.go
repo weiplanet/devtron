@@ -68,7 +68,7 @@ func (impl InstalledAppVersionHistoryRepositoryImpl) GetInstalledAppVersionHisto
 
 func (impl InstalledAppVersionHistoryRepositoryImpl) GetLatestInstalledAppVersionHistory(installAppVersionId int) (*InstalledAppVersionHistory, error) {
 	model := &InstalledAppVersionHistory{}
-	err := impl.dbConnection.Model(&model).
+	err := impl.dbConnection.Model(model).
 		Column("installed_app_version_history.*").
 		Where("installed_app_version_history.installed_app_version_id = ?", installAppVersionId).
 		Order("installed_app_version_history.id desc").Limit(1).
@@ -78,7 +78,7 @@ func (impl InstalledAppVersionHistoryRepositoryImpl) GetLatestInstalledAppVersio
 
 func (impl InstalledAppVersionHistoryRepositoryImpl) GetLatestInstalledAppVersionHistoryByGitHash(gitHash string) (*InstalledAppVersionHistory, error) {
 	model := &InstalledAppVersionHistory{}
-	err := impl.dbConnection.Model(&model).
+	err := impl.dbConnection.Model(model).
 		Column("installed_app_version_history.*").
 		Where("installed_app_version_history.git_hash = ?", gitHash).
 		Order("installed_app_version_history.id desc").Limit(1).
