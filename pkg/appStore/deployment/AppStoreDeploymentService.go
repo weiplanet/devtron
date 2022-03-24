@@ -547,7 +547,6 @@ func (impl AppStoreDeploymentServiceImpl) DeleteInstalledApp(ctx context.Context
 	return installAppVersionRequest, nil
 }
 
-
 func (impl AppStoreDeploymentServiceImpl) LinkHelmApplicationToChartStore(ctx context.Context, request *openapi.UpdateReleaseWithChartLinkingRequest,
 	appIdentifier *client.AppIdentifier, userId int32) (*openapi.UpdateReleaseResponse, bool, error) {
 
@@ -563,7 +562,6 @@ func (impl AppStoreDeploymentServiceImpl) LinkHelmApplicationToChartStore(ctx co
 		return nil, isChartRepoActive, nil
 	}
 	// check if chart repo is active ends
-
 
 	// STEP-1 check if the app is installed or not
 	isInstalled, err := impl.helmAppService.IsReleaseInstalled(ctx, appIdentifier)
@@ -690,7 +688,11 @@ func (impl AppStoreDeploymentServiceImpl) RollbackApplication(ctx context.Contex
 			return false, err
 		}
 	} else {
-		// TODO : handle acd
+		valuesYaml, success, err = impl.appStoreDeploymentArgoCdService.RollbackRelease(ctx, installedApp, request.GetVersion())
+		if err != nil {
+			impl.logger.Errorw("error while rollback helm release", "error", err)
+			return false, err
+		}
 	}
 
 	//DB operation
@@ -701,6 +703,10 @@ func (impl AppStoreDeploymentServiceImpl) RollbackApplication(ctx context.Contex
 	if err != nil {
 		impl.logger.Errorw("error while updating db", "error", err)
 		return false, err
+	}
+
+	if installedApp.AppOfferingMode == util2.SERVER_MODE_HYPERION {
+		// TODO - trigger new deployment with older values
 	}
 
 	//STEP 8: finish with return response
