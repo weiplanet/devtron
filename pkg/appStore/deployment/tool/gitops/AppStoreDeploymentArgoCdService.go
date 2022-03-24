@@ -30,20 +30,15 @@ type AppStoreDeploymentArgoCdServiceImpl struct {
 	appStoreDeploymentFullModeService appStoreDeploymentFullMode.AppStoreDeploymentFullModeService
 	acdClient                         application2.ServiceClient
 	chartGroupDeploymentRepository    appStoreRepository.ChartGroupDeploymentRepository
-	//installedAppRepository            appStoreRepository.InstalledAppRepository
-	installedAppVersionHistory        appStoreRepository.InstalledAppVersionHistory
 }
 
 func NewAppStoreDeploymentArgoCdServiceImpl(logger *zap.SugaredLogger, appStoreDeploymentFullModeService appStoreDeploymentFullMode.AppStoreDeploymentFullModeService,
-	acdClient application2.ServiceClient, chartGroupDeploymentRepository appStoreRepository.ChartGroupDeploymentRepository,
-	installedAppVersionHistory appStoreRepository.InstalledAppVersionHistory) *AppStoreDeploymentArgoCdServiceImpl {
+	acdClient application2.ServiceClient, chartGroupDeploymentRepository appStoreRepository.ChartGroupDeploymentRepository) *AppStoreDeploymentArgoCdServiceImpl {
 	return &AppStoreDeploymentArgoCdServiceImpl{
 		Logger:                            logger,
 		appStoreDeploymentFullModeService: appStoreDeploymentFullModeService,
 		acdClient:                         acdClient,
 		chartGroupDeploymentRepository:    chartGroupDeploymentRepository,
-		//installedAppRepository:            installedAppRepository,
-		installedAppVersionHistory:        installedAppVersionHistory,
 	}
 }
 
