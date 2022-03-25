@@ -143,7 +143,7 @@ func (impl AppStoreDeploymentArgoCdServiceImpl) DeleteInstalledApp(ctx context.C
 }
 
 // returns - valuesYamlStr, success, error
-func (impl AppStoreDeploymentArgoCdServiceImpl) RollbackRelease(ctx context.Context, installedApp *appStoreBean.InstallAppVersionDTO, deploymentVersion int32) (string, bool, error) {
+func (impl AppStoreDeploymentArgoCdServiceImpl)  RollbackRelease(ctx context.Context, installedApp *appStoreBean.InstallAppVersionDTO, deploymentVersion int32) (string, bool, error) {
 	// TODO: implement this
 	return "", false, nil
 }
